@@ -13,11 +13,12 @@ if(!isset($_POST["code"])) {
     $code = $_POST["code"];
 
     $res = DB::request("SELECT idRendu, titre FROM rendu WHERE code=?", array($code));
-    if($res->rowCount() < 1) {
+    $all = $res->fetchAll();
+    if(count($all) < 1) {
         echo "<p>Mauvais code de rendu. Veuillez vérifier votre saisie. <a href=\"index.php\">Retour au formulaire</a>.</p>";
     } else {
         // OK vérifications faites
-        $obj = $res->fetch();
+        $obj = $all[0];
         $titre = $obj->titre;
         $idRendu = $obj->idRendu;
 
