@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Intentional failure, for test purpose only. File=$1"
+
+exit 1
+

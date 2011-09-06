@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PATH=/bin:/usr/bin:$PATH
+
+if grep 'object Petal' $1 >/dev/null 2>&1
+then
+	exit 0
+else
+	echo -n "Le document fourni n'est pas un fichier Rose comme demande. Le format probable est :  "
+	file -b $1
+	# "brief mode": n'ajoute pas le nom du fichier
+	exit 1
+fi
+
+

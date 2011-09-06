@@ -1,0 +1,58 @@
+html {
+    font-family: "trebuchet ms", sans-serif;
+}
+
+table.nb {
+    border: none;
+}
+
+table.nb td, table.nb tr {
+    border: none;
+}
+
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #BBB;
+}
+
+td, th {
+    border: 1px solid black;
+    padding: .2em;
+}
+
+th {
+    background-color: #FFA;
+}
+
+#loggedbox {
+    background-color: #FFA;
+    border: 1px solid black;
+    padding: .3em;
+}
+
+#menuBox {
+    padding: .3em;
+    border-bottom: 1px solid black;
+}
+
+.error {
+    background-color: #FCC;
+    color: #800;
+    border: 2px solid #800;
+    padding: 1em;
+    overflow: auto;
+}
+
+.success {
+    background-color: #CFC;
+    color: #080;
+    border: 2px solid #080;
+    padding: 1em;
+    margin-top: 1em;
+    overflow: auto;
+
+}

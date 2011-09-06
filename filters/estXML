@@ -1,0 +1,16 @@
+#!/bin/bash
+
+FILE=/usr/bin/file
+GREP=/bin/grep
+
+if $FILE $1 |$GREP 'XML' >/dev/null 2>&1
+then
+	exit 0
+else
+	echo -n "Le document fourni n'est pas un fichier XML comme demande. Le format probable est :  "
+	$FILE -b $1
+	# "brief mode": n'ajoute pas le nom du fichier
+	exit 1
+fi
+
+

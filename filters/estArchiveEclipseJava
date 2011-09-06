@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DIR=$(dirname `which $0`)
+GREP=/bin/grep
+UNZIP=/usr/bin/unzip
+
+if $DIR/estArchiveEclipse $1
+then
+	if $UNZIP -l $1 |$GREP '.java$'
+	then
+		exit 0
+	else
+		echo "Votre archive est bien une archive Eclipse, mais elle ne contient pas vos fichiers source Java."
+		echo "Exportez votre archive en cochant bien le dossier 'src' dans la boite de dialogue."
+		exit 1
+	fi
+else
+	exit $?
+fi

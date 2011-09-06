@@ -1,0 +1,17 @@
+#!/bin/bash
+
+FILE=/usr/bin/file
+GREP=/bin/grep
+
+if $FILE $1 |$GREP 'PDF document' >/dev/null 2>&1
+then
+	exit 0
+else
+	echo -n "Le document fourni n'est pas un PDF. Le format probable est :  "
+	$FILE -b $1
+	# "brief mode": n'ajoute pas le nom du fichier
+	echo "Utilisez Imprimer - Vers PDFCreator pour créer un document PDF."
+	exit 1
+fi
+
+

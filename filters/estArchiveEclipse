@@ -1,0 +1,44 @@
+#!/bin/bash
+
+FILE=/usr/bin/file
+GREP=/bin/grep
+UNZIP=/usr/bin/unzip
+SED=/bin/sed
+SORT=/bin/sort
+TAIL=/usr/bin/tail
+
+DIR=$(dirname `which $0`)
+ESTKIT=$DIR/../scripts/estKit.py
+
+# Cette variable contient la date avant laquelle tous les kits ont ete realises
+# Si le plus recent fichier d'un eleve est anterieur a cette date, c'est un
+# signe qu'on nous a envoye un kit !
+KITS_CREATED_BEFORE=20100901
+
+if $FILE $1 |$GREP 'Zip archive data' >/dev/null 2>&1
+then
+	if $UNZIP -l $1 |$GREP '.project' >/dev/null 2>&1
+	then
+		#PLUS_RECENT=$($ZIPINFO -T $1 |sed -n 's/^.*\ \(20[0-9]*\)\..*$/\1/p' |$SORT |$TAIL -1)
+		#if [ "$PLUS_RECENT" -gt "$KITS_CREATED_BEFORE" ]
+		if ! $ESTKIT $1 2>&1
+		then
+			exit 0
+		else
+			echo "Vous venez d'envoyer le fichier de kit." # cree le $PLUS_RECENT."
+			echo "Merci d'envoyer l'archive qui correspond a votre travail, pas le kit !"
+			echo "Dans Eclipse, choisissez Export - Archive File, indiquez un nom, et envoyez CE fichier."
+			exit 3
+		fi
+	else
+		echo "Il s'agit d'un fichier ZIP qui n'est pas une archive Eclipse"
+		echo "Dans Eclipse, choisissez Export - Archive File"
+		exit 1
+	fi
+else
+	echo -n "Il ne s'agit pas d'un fichier ZIP. Le format probable est :  "
+	$FILE -b $1
+	echo "Dans Eclipse, choisissez Export - Archive File"
+	exit 2
+fi
+
