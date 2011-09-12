@@ -6,11 +6,8 @@ require("db.php");
 DB::connect();
 
 function head($titre, $role = false, $mustBeLoggedIn = true) {
-
-    echo "<!-- " . $_SERVER["REMOTE_ADDR"] . " -->\n";
-
-    // ici mettre TRUE pour passer en mode TRAVAUX
-    if(TRUE && $_SERVER["REMOTE_ADDR"] != "82.231.161.84" && $_SERVER["REMOTE_ADDR"] != "160.228.100.30") {
+    // work in progress?
+    if(Local::$wip && ! in_array($_SERVER["REMOTE_ADDR"], Local::$wip_authorized)) {
         echo "<div class=\"error\">Travaux en cours. Merci de patienter quelques minutes, ou de contacter le mainteneur...</div>";
         exit;
     }

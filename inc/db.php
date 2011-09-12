@@ -2,13 +2,20 @@
 
 class DB {
     static $dbh;
+    static $driver;
     
     static function connect() {
         try {
             DB::$dbh = new PDO(Local::$db_dsn, Local::$db_user, Local::$db_password);
             DB::$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             DB::$dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-            #DB::$dbh->query("SET NAMES 'utf8'");
+            
+            DB::$driver = DB::$dbh->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            // set charset to UTF-8
+            if(DB::$driver == "mysql") {
+                DB::$dbh->query("SET NAMES 'utf8'");
+            } // nothing to do with SQLite
         } catch(PDOException $e) {
             die("<pre class='error'>Database exception when connecting:\n  " . htmlspecialchars($e->getMessage()) . "</pre>");
         }

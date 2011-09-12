@@ -16,12 +16,15 @@ if(!isset($_GET["id"])) {
 
     $idRendu = $_GET["id"];
 
-    $req = "SELECT D.date date, commentaire, login, idRenduDonne, code FROM renduDonne D, rendu R WHERE R.idRendu=? AND R.idRendu=D.idRendu ORDER BY date";
+    $req = "SELECT D.date date, commentaire, login, idRenduDonne, code, titre FROM renduDonne D, rendu R WHERE R.idRendu=? AND R.idRendu=D.idRendu ORDER BY date";
 
     $res = DB::request($req, array($idRendu));
 
     $multiCount = Array();
 
+    // used for translitteration
+    setlocale(LC_ALL, Local::$locale);
+    
     while($row = $res->fetch()) {
         $idRenduDonne = $row->idRenduDonne;
 
@@ -44,10 +47,14 @@ if(!isset($_GET["id"])) {
             $multiCount[$login] = 0;
             $suffixe = "";
         }
-
+        
         $path = "Rendu_{$row->code}/{$login}{$suffixe}";
 
         $code = $row->code;
+        
+                
+        $ascii_title = preg_replace("/[^A-Za-z0-9]/", "_", iconv('UTF-8', 'ASCII//TRANSLIT', $row->titre));
+
 
         $zip->addFromString("{$path}/LisezMoi.txt", $eleves);
 
@@ -67,7 +74,7 @@ if(!isset($_GET["id"])) {
 
     if(isset($code)) {
         header("Content-type: application/zip");
-        header("Content-Disposition: inline; filename=\"rendu_{$code}.zip\"");
+        header("Content-Disposition: inline; filename=\"rendu_{$code}_{$ascii_title}.zip\"");
         readfile($tmpname);
     } else {
         echo "Pas de fichier a zipper.";
