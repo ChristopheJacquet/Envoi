@@ -9,7 +9,11 @@ Installation
 
 2) Ajouter un fichier de configuration "local.conf" dans inc/conf (voir ci-dessous)
 
-3) Ajouter dans "public" un .htaccess qui règle les variables PHP auto_prepend_file
+3) Depuis le répertoire du projet :
+cd install
+php -d include_path=.:../inc install.php
+
+4) Ajouter dans "public" un .htaccess qui règle les variables PHP auto_prepend_file
 et include_path :
 
 php_value display_errors "stdout"
@@ -18,7 +22,7 @@ php_value include_path ".:/chemin/complet/vers/répertoire/inc/"
 
 (Il est possible d'y mettre de plus une restriction d'accès)
 
-4) Rendre le répertoire "public" accessible par le web via Apache, 
+5) Rendre le répertoire "public" accessible par le web via Apache, 
 par exemple avec un alias
 Il est souhaitable que les autres répertoires ne soient pas accessibles par le web
 
@@ -27,6 +31,8 @@ Configuration
 -------------
 
 La configuration doit être réalisée dans inc/conf/local.conf
+
+Bien régler les paramètres d'accès à la base de données et les chemins.
 
 Ce fichier règle un certain nombre de paramètres, et fournit une fonction
 is_valid_user. Cette fonction réalise l'authentification. Spécification sommaire :
@@ -74,6 +80,25 @@ Voici les grandes lignes d'une authentification LDAP :
         }
     }
 
+
+Utilisation
+-----------
+
+1 livraison (ou "rendu"), ou plus précisément "une *spécification* de rendu" est créé par un enseignant :
+ - correspond à une livraison attendue de chaque groupe d'étudiants
+ - peut posséder plusieurs fichiers (ou plus précisément *spécifications* de fichiers)
+ - chaque spéc. de fichier peut être vérifiée par un script Unix ("filtre")
+ - possède un CODE unique (avec code détecteur d'erreur), qui est à fournir au groupe d'étudiants concerné
+ - peut être créée par CLONAGE d'une autre spéc. de livraison (pratique pour demander une livraison
+identique d'année en année, ou bien à plusieurs groupes d'étudiants)
+
+1 étudiant rend une livraison, ou plus précisément "une *instance* de livraison", conforme à une spécification
+de livraison donée par un prof
+ - en utilisant le code
+ - en fournissant un fichier (instance de fichier) pour chaque spéc. de fichier indiquée par le prof
+ - les fichiers non conformes sont rejetés
+ - la livraison n'est acceptée que lorsque les fichiers sont conformes
+ - un e-mail est alors envoyé
 
 
 SQLite

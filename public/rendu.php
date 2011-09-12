@@ -167,7 +167,7 @@ if(!isset($_POST["code"])) {
 
                         $fp      = fopen($tmpName, 'r');
                         $content = fread($fp, filesize($tmpName));
-                        $content = addslashes($content);
+                        #$content = addslashes($content);  No longer needed with PDO
                         fclose($fp);
 
                         $idFichier = substr($formFileId, 7);

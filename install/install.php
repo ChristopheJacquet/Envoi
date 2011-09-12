@@ -1,7 +1,10 @@
 <?php
 
-require_once "../inc/conf/local.php";
-require_once "../inc/db.php";
+require_once "conf/local.php";
+require_once "db.php";
+
+DB::connect();
+
 
 switch(DB::$driver) {
 case "mysql":
@@ -116,8 +119,6 @@ break;
 default:
 die("Unsupported SQL driver: " . DB::$driver) . PHP_EOL;
 }
-
-DB::connect();
 
 foreach ($statements as $s) {
     DB::request($s);
