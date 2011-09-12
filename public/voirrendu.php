@@ -2,19 +2,19 @@
 
 require("ziptools.php");
 
-head("Rendu", "PROF");
+head("Livraison", "PROF");
 
 //if($_SESSION["role"] != "PROF") die("Page réservée aux enseignants.");
 
 if(!isset($_GET["id"])) {
-    echo "<p>Vous devez indiquer un numéro de rendu. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
+    echo "<p>Vous devez indiquer un numéro de livraison. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
 } else {
     $idRendu = $_GET["id"];
 
     $row = DB::request_one_row(
             "SELECT code, titre, COUNT(idFichier) C FROM rendu R LEFT OUTER JOIN fichier F ON R.idRendu=F.idRendu WHERE R.idRendu=? GROUP BY F.idRendu",
             array($idRendu));
-    if(! $row) die("Mauvais ID de rendu.");
+    if(! $row) die("Mauvais ID de livraison.");
     echo "<h1>" . htmlspecialchars($row->titre) . " (code " . $row->code . ")</h1>";
 
     echo "<h2>{$row->C} fichiers</h2>\n<ul>\n";
@@ -24,7 +24,7 @@ if(!isset($_GET["id"])) {
     }
     echo "</ul>\n";
 
-    echo "<p><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier au rendu</a>.</p>";
+    echo "<p><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a>.</p>";
     
     $res = DB::request("SELECT date, commentaire, login, idRenduDonne FROM renduDonne WHERE idRendu=? ORDER BY date", array($idRendu));
 
@@ -65,8 +65,8 @@ if(!isset($_GET["id"])) {
 
     echo "</table>";
 
-    echo "<p><a href=\"ziprendu.php?id=$idRendu\">Télécharger tous les fichiers rendus sous forme d'archive ZIP</a>.</p>";
-    echo "<p><a href=\"suppr.php?id=$idRendu\">Supprimer ce rendu (irréversible) ; le code vous sera demandé</a>.</p>";
+    echo "<p><a href=\"ziprendu.php?id=$idRendu\">Télécharger tous les fichiers livrés sous forme d'archive ZIP</a>.</p>";
+    echo "<p><a href=\"suppr.php?id=$idRendu\">Supprimer cette livraison (irréversible) ; le code vous sera demandé</a>.</p>";
 }
 
 foot();

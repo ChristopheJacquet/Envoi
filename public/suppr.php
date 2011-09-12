@@ -1,11 +1,11 @@
 <?php
 
-head("Suppression de fourniture", "PROF");
+head("Suppression de livraison", "PROF");
 
 if(isset($_POST["code"])) {
     $idRendu = $_GET["id"];
 
-    echo "<p>Suppression de la fourniture #" . $idRendu . "</p>";
+    echo "<p>Suppression de la livraison #" . $idRendu . "</p>";
 
     # rendu
     $res = DB::request(
@@ -14,12 +14,12 @@ if(isset($_POST["code"])) {
 
     if($res->rowCount() < 1) {
         die(<<<END
-<p>$idRendu : fourniture inexistante, ou n'appartenant pas à l'utilisateur {$_SESSION["login"]}, ou mauvais code.</p>
+<p>$idRendu : livraison inexistante, ou n'appartenant pas à l'utilisateur {$_SESSION["login"]}, ou mauvais code.</p>
 <p><a href="voirrendu.php?id=$idRendu">Retour au rendu</a></p>
 END
 );
     } else {
-        echo "<p>Supprimé la spécification de fourniture.</p>";
+        echo "<p>Supprimé la spécification de livraison.</p>";
     }
 
 
@@ -44,7 +44,7 @@ END
             "DELETE FROM renduDonne WHERE idRendu=?",
             array($idRendu));
 
-    echo "<p>Supprimé " . ($res->rowCount()) . " fournitures</p>";
+    echo "<p>Supprimé " . ($res->rowCount()) . " livraisons</p>";
 
 
     # fichier
@@ -60,6 +60,7 @@ END
 <p>
 Code :
 <input name="code"></input>
+<input type="submit"></input>
 </p>
 </form>
 FIN;

@@ -21,15 +21,15 @@ function head($titre, $role = false, $mustBeLoggedIn = true) {
                 " (" . (($_SESSION["role"] == "PROF") ? "enseignant" : "étudiant") . ")" .
                 ". <a href=\"logout.php\">Déconnexion</a>.</div>";
 
-        if($_SESSION["role"] == "PROF") $loggedin .= "<div id=\"menuBox\"><a href=\"index.php\">Accueil</a> | <a href=\"listerendus.php\">Liste rendus</a> | <a href=\"ajoutrendu.php\">Ajout rendu</a></div>";
+        if($_SESSION["role"] == "PROF") $loggedin .= "<div id=\"menuBox\"><a href=\"index.php\">Accueil</a> | <a href=\"listerendus.php\">Liste livraisons</a> | <a href=\"ajoutrendu.php\">Ajout livraison</a></div>";
 
         
     } else if($mustBeLoggedIn) die("<a href=\"index.php\">Veuillez vous connecter</a>.");
 
     if($role && $_SESSION["role"] != $role) die("Page réservée.");
 
-    $metatitre = $titre ? "Rendu de travaux – $titre" : "Rendu de travaux";
-    $h1titre = $titre ? $titre : "Rendu de travaux";
+    $metatitre = $titre ? "Livraison de travaux – $titre" : "Livraison de travaux";
+    $h1titre = $titre ? $titre : "Livraison de travaux";
 
     echo <<<FIN
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">

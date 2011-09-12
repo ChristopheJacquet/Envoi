@@ -1,7 +1,7 @@
 <?php
 
 require("code.php");
-head("Ajout de rendu", "PROF");
+head("Ajout de livraison", "PROF");
 
 if(isset($_POST["titre"])) {
     $idRendu = DB::insert_autoinc(
@@ -12,11 +12,11 @@ if(isset($_POST["titre"])) {
 
     DB::request("UPDATE rendu SET code=? WHERE idRendu=?", array($code, $idRendu));
 
-    echo "<p>Le code pour le rendu « " . htmlspecialchars($_POST["titre"]) . " » est <strong>$code</strong>.</p>\n";
+    echo "<p>Le code pour la livraison « " . htmlspecialchars($_POST["titre"]) . " » est <strong>$code</strong>.</p>\n";
 
     if($_POST["clone"] != "no") {
         $idParent = $_POST["clone"];
-        echo "<p>Clonage du rendu #" . $idParent . "...</p>\n";
+        echo "<p>Clonage de la livraison #" . $idParent . "...</p>\n";
         $res = DB::request("SELECT script, nom, optionnel FROM fichier WHERE idRendu=?", array($idParent));
         while($obj = $res->fetch()) {
             DB::request(
@@ -26,7 +26,7 @@ if(isset($_POST["titre"])) {
         }
 
     } else {
-        echo "<p>Vous voulez probablement <a href=\"ajoutfichier.php?idRendu=$idRendu\">ajouter un fichier à ce rendu...</p>\n";
+        echo "<p>Vous voulez probablement <a href=\"ajoutfichier.php?idRendu=$idRendu\">ajouter un fichier à cette livraison...</p>\n";
     }
 
     echo "<p><a href=\"index.php\">Retour à l'accueil</a>.</p>\n";

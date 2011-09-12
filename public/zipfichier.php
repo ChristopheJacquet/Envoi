@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-        <title>PHP Rendu &ndash; Visualisation de fichier</title>
+        <title>Envoi &ndash; Visualisation de fichier</title>
         <script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJava.js"></script>
 	<script type="text/javascript">

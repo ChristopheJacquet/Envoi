@@ -1,9 +1,9 @@
 <?php
 
-head("Ajout de fichier à un rendu", "PROF");
+head("Ajout de fichier à une livraison", "PROF");
 
 if(!isset($_GET["idRendu"])) {
-    die("Il faut indiquer un numéro de rendu.");
+    die("Il faut indiquer un numéro de livraison.");
 } else {
     $idRendu = $_GET["idRendu"];
 
@@ -30,7 +30,7 @@ EOF;
                 "INSERT INTO fichier (idRendu, nom, script, optionnel) VALUES (?, ?, ?, ?)",
                 array($idRendu, $_POST["nom"], $_POST["script"], isset($_POST["optionnel"]) ? 1 : 0));
 
-        echo "<p>Fichier ajouté. <a href=\"voirrendu.php?id=$idRendu\">Retourner au rendu</a>.</p>";
+        echo "<p>Fichier ajouté. <a href=\"voirrendu.php?id=$idRendu\">Retourner à la livraison</a>.</p>";
     }
 }
 

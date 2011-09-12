@@ -38,7 +38,7 @@ if(!isset($_GET["id"])) {
             $eleves .= " - {$r->prenom} {$r->nom} <{$r->email}>\n";
         }
 
-        $eleves .= "\nDate de rendu : {$row->date}\n\nCommentaire :\n{$row->commentaire}\n";
+        $eleves .= "\nDate de livraison : {$row->date}\n\nCommentaire :\n{$row->commentaire}\n";
 
         if(isset($multiCount[$login])) {
             $multiCount[$login]++;
@@ -48,7 +48,7 @@ if(!isset($_GET["id"])) {
             $suffixe = "";
         }
         
-        $path = "Rendu_{$row->code}/{$login}{$suffixe}";
+        $path = "Livraison_{$row->code}/{$login}{$suffixe}";
 
         $code = $row->code;
         
@@ -74,7 +74,7 @@ if(!isset($_GET["id"])) {
 
     if(isset($code)) {
         header("Content-type: application/zip");
-        header("Content-Disposition: inline; filename=\"rendu_{$code}_{$ascii_title}.zip\"");
+        header("Content-Disposition: inline; filename=\"livraison_{$code}_{$ascii_title}.zip\"");
         readfile($tmpname);
     } else {
         echo "Pas de fichier a zipper.";

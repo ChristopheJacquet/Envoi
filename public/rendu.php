@@ -2,7 +2,7 @@
 
 require_once('phpmailer/class.phpmailer.php');
 
-head("Rendu de rapport");
+head("Livraison de compte-rendu");
 
 //    print_r($_POST);
 
@@ -15,7 +15,7 @@ if(!isset($_POST["code"])) {
     $res = DB::request("SELECT idRendu, titre FROM rendu WHERE code=?", array($code));
     $all = $res->fetchAll();
     if(count($all) < 1) {
-        echo "<p>Mauvais code de rendu. Veuillez vérifier votre saisie. <a href=\"index.php\">Retour au formulaire</a>.</p>";
+        echo "<p>Mauvais code de livraison. Veuillez vérifier votre saisie. <a href=\"index.php\">Retour au formulaire</a>.</p>";
     } else {
         // OK vérifications faites
         $obj = $all[0];
@@ -88,7 +88,7 @@ if(!isset($_POST["code"])) {
             }
 
             if($conformes) {
-                // A ce state, le rendu est a priori conforme. Essayons de
+                // A ce state, la livraison est a priori conforme. Essayons de
                 // construire l'e-mail, ce qui va permettre de verifier si les
                 // adresses sont correctes
 
@@ -131,7 +131,7 @@ if(!isset($_POST["code"])) {
             }
 
             if(!$conformes) {
-                echo "<p><strong>Rendu non effectué. Vous devez recommencer.</strong></p></div>";
+                echo "<p><strong>Livraison non effectuée. Vous devez recommencer.</strong></p></div>";
             }
 
             if($conformes) {
@@ -213,7 +213,7 @@ if(!isset($_POST["code"])) {
                 }
                 
 
-                echo "<div class='success'><p>Rapport rendu avec succès. <a href=\"index.php\">Retour à l'accueil</a>.</p></div>";
+                echo "<div class='success'><p>Compte-rendu livré avec succès. <a href=\"index.php\">Retour à l'accueil</a>.</p></div>";
 
 
                 $afficheFormulaire = false;

@@ -1,6 +1,6 @@
 <?php
 
-head("Liste des rendus", "PROF");
+head("Liste des livraisons", "PROF");
 
 $res = DB::request(
         "SELECT idRendu, code, titre FROM rendu WHERE idEnseignant=? ORDER BY date DESC", 

@@ -32,7 +32,7 @@ if(isset($_POST["login"]) && isset($_POST["password"])) {
             //echo "<!-- syndrome = " . syndrome($passwd) . " -->";
 
             if(estCodeValide($passwd)) {
-                $loginMessage .= "<p>Entrez <strong>votre</strong> mot de passe, <strong>pas le code de rendu</strong>&nbsp;!</p>";
+                $loginMessage .= "<p>Entrez <strong>votre</strong> mot de passe, <strong>pas le code de livraison</strong>&nbsp;!</p>";
             }
 
             $loginMessage .= "</div>";
@@ -78,8 +78,8 @@ foot();
 function menu_prof() {
     echo <<<EOF
 <ul>
-<li><a href="ajoutrendu.php">Ajout d'un rendu</a></li>
-<li><a href="listerendus.php">Liste des rendus</a></li>
+<li><a href="ajoutrendu.php">Ajout d'une livraison</a></li>
+<li><a href="listerendus.php">Liste des livraisons</a></li>
 </ul>
 EOF;
 }
@@ -87,7 +87,7 @@ EOF;
 function menu_eleve() {
     echo <<<EOF
 <form action="rendu.php" method="post">
-<p>Rendre un compte-rendu&nbsp;:</p>
+<p>Livrer un compte-rendu&nbsp;:</p>
 Code&nbsp;: <input name="code" />
 <input type="submit" value="Accéder au formulaire &gt;&gt;" />
 </form>
