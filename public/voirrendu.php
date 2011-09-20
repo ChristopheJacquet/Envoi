@@ -25,8 +25,6 @@ require("ziptools.php");
 
 head("Livraison", "PROF");
 
-//if($_SESSION["role"] != "PROF") die("Page réservée aux enseignants.");
-
 if(!isset($_GET["id"])) {
     echo "<p>Vous devez indiquer un numéro de livraison. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
 } else {
@@ -46,6 +44,9 @@ if(!isset($_GET["id"])) {
     echo "</ul>\n";
 
     echo "<p><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a>.</p>";
+    
+    $obj = DB::request_one_row("SELECT COUNT(DISTINCT login) nb FROM renduDonne WHERE idRendu=?", array($idRendu));
+    echo "<p>{$obj->nb} groupes ont effectué une livraison.</p>";
     
     $res = DB::request("SELECT date, commentaire, login, idRenduDonne FROM renduDonne WHERE idRendu=? ORDER BY date", array($idRendu));
 
