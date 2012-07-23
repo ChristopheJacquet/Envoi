@@ -35,6 +35,9 @@ if(!isset($_GET["id"])) {
             array($idRendu));
     if(! $row) die("Mauvais ID de livraison.");
     echo "<h1>" . htmlspecialchars($row->titre) . " (code " . $row->code . ")</h1>";
+    
+    $url = baseURL() . "?code=" . $row->code;
+    echo "<p>URL : <a href='{$url}'>{$url}</a></p>";
 
     echo "<h2>{$row->C} fichiers</h2>\n<ul>\n";
     $res = DB::request("SELECT nom, script, idFichier, optionnel FROM fichier WHERE idRendu=?", array($idRendu));

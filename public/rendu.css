@@ -77,3 +77,16 @@ th {
     overflow: auto;
 
 }
+
+table.pad {
+    width: 100%;
+    height: 100%;
+}
+
+.pad td {
+    text-align: center;
+}
+
+.padzone, .padzone input, .padzone textarea, .padzone select {
+    font-size: 16pt;
+}

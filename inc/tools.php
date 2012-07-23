@@ -26,7 +26,21 @@ require("db.php");
 
 DB::connect();
 
-function head($titre, $role = false, $mustBeLoggedIn = true) {
+function baseURL() {
+	$s = empty($_SERVER["HTTPS"]) ? ''
+		: ($_SERVER["HTTPS"] == "on") ? "s"
+		: "";
+	$protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
+	$port = ($_SERVER["SERVER_PORT"] == "80") ? ""
+		: (":".$_SERVER["SERVER_PORT"]);
+	return implode("/", explode("/", $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'], -1));
+}
+
+function strleft($s1, $s2) {
+	return substr($s1, 0, strpos($s1, $s2));
+}
+
+function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
     // work in progress?
     if(Local::$wip && ! in_array($_SERVER["REMOTE_ADDR"], Local::$wip_authorized)) {
         echo "<div class=\"error\">Travaux en cours. Merci de patienter quelques minutes, ou de contacter le mainteneur...</div>";
@@ -43,6 +57,7 @@ function head($titre, $role = false, $mustBeLoggedIn = true) {
                 ". <a href=\"logout.php\">Déconnexion</a>.</div>";
 
         if($_SESSION["role"] == "PROF") $loggedin .= "<div id=\"menuBox\"><a href=\"index.php\">Accueil</a> | <a href=\"listerendus.php\">Liste livraisons</a> | <a href=\"ajoutrendu.php\">Ajout livraison</a></div>";
+        //| <a href='listeseances.php'>Séances</a></div>";
 
         
     } else if($mustBeLoggedIn) die("<a href=\"index.php\">Veuillez vous connecter</a>.");
@@ -52,6 +67,7 @@ function head($titre, $role = false, $mustBeLoggedIn = true) {
     $metatitre = $titre ? "Livraison de travaux – $titre" : "Livraison de travaux";
     $h1titre = $titre ? $titre : "Livraison de travaux";
 
+    if($display) {
     echo <<<FIN
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -59,12 +75,15 @@ function head($titre, $role = false, $mustBeLoggedIn = true) {
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>$metatitre</title>
         <link rel="stylesheet" type="text/css" href="rendu.css" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <meta name="format-detection" content="telephone=no" />
     </head>
     <body>
     $loggedin
 
     <h1>$h1titre</h1>
 FIN;
+    }
 }
 
 function foot() {

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+FILE=/usr/bin/file
+GREP=/bin/grep
+
+if $FILE $1 |$GREP 'Zip archive data' >/dev/null 2>&1
+then
+	exit 0
+else
+	echo -n "Il ne s'agit pas d'un fichier ZIP. Le format probable est :  "
+	$FILE -b $1
+	echo "Veuillez fournir un fichier ZIP."
+	exit 2
+fi
+

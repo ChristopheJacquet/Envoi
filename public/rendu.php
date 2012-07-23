@@ -25,8 +25,10 @@ head("Livraison de compte-rendu");
 
 //    print_r($_POST);
 
-if(!isset($_POST["code"])) {
-    echo "<p>Erreur, un code de retour doit être donné. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
+if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+    echo "<p>Fichier trop gros vis-à-vis des réglages du serveur. Merci de demander à votre encadrant d'augmenter post_max_size.</p>";
+} elseif(!isset($_POST["code"])) {
+    echo "<p>Erreur, un code de livraison doit être donné. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
 } else {
     // un code existe, mais le formulaire reste à remplir
     $code = $_POST["code"];
@@ -71,10 +73,41 @@ if(!isset($_POST["code"])) {
 
                         $output = array();
                         $retval = 0;
-                        exec(escapeshellcmd(Local::$basedir . "/filters/" . $r->script) . " " . escapeshellarg($tmpName), $output, $retval);
-                        if($retval != 0) {
-                            if($conformes) echo "<div class=\"error\">\n";
-                            echo "<p>Le fichier « {$r->nom} » n'est pas conforme: </p><pre>" . implode("\n", $output) . "</pre>";
+                        
+                        /* DEBUG
+                        echo "<pre>";
+                        echo "Temp: '" . htmlspecialchars($tmpName) . "'   ";
+                        echo "%%%% exists=" . file_exists($tmpName);
+                        echo "   sz=" . filesize($tmpName) . "/   ";
+                        echo "\n";
+                        passthru("head {$tmpName} |hexdump -C");
+                        echo "\n\n";
+                        passthru("file {$tmpName}");
+                        echo "///";
+                        echo "</pre>";
+                        print_r($tmpName);
+                         */
+                        
+                        if(file_exists($tmpName)) {
+                            $cmd = escapeshellcmd(Local::$basedir . "/filters/" . $r->script) . " " . escapeshellarg($tmpName);
+                            exec($cmd, $output, $retval);
+                            if($retval != 0) {
+                                if($conformes) echo "<div class=\"error\">\n";
+                                echo "<!-- Error code: " . $retval . " -- Comamnd: $cmd -->";
+                                
+                                if($retval >= 126) {
+                                        echo "<p>Erreur probable de configuration de l'outil de livraison. Merci de prévenir votre encadrant et de lui montrer ce message.</p>";
+                                        
+                                        if($retval == 126) echo "<p>Cause probable : filtre non exécutable ($cmd)</p>";
+                                        elseif($retval == 127) echo "<p>Cause probable : filtre non trouvé ($cmd)</p>";
+                                        else echo "<p>Cause : erreur $retval.</p>";
+                                } else {
+                                        echo "<p>Le fichier « {$r->nom} » n'est pas conforme: </p><pre>" . implode("\n", $output) . "</pre>";
+                                }
+                                $conformes = FALSE;
+                            }
+                        } else {
+                            echo "<div class='error'>Problème lors de l'envoi : fichier non transmis sur le serveur. Merci de contacter votre encadrant. Nom temporaire de fichier : <code>{$tmpName}</code>";
                             $conformes = FALSE;
                         }
                     } else {  // taille à zéro => fichier absent
@@ -227,8 +260,9 @@ if(!isset($_POST["code"])) {
 
                 // Suppression des fichiers temporaires
                 foreach($_FILES as $formFileId => $file) {
-                    if($file["size"] > 0)
+                    if($file["size"] > 0) {
                         unlink($file["tmp_name"]);
+                    }
                 }
                 
 

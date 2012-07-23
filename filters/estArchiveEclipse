@@ -10,17 +10,10 @@ TAIL=/usr/bin/tail
 DIR=$(dirname `which $0`)
 ESTKIT=$DIR/../scripts/estKit.py
 
-# Cette variable contient la date avant laquelle tous les kits ont ete realises
-# Si le plus recent fichier d'un eleve est anterieur a cette date, c'est un
-# signe qu'on nous a envoye un kit !
-KITS_CREATED_BEFORE=20100901
-
 if $FILE $1 |$GREP 'Zip archive data' >/dev/null 2>&1
 then
 	if $UNZIP -l $1 |$GREP '.project' >/dev/null 2>&1
 	then
-		#PLUS_RECENT=$($ZIPINFO -T $1 |sed -n 's/^.*\ \(20[0-9]*\)\..*$/\1/p' |$SORT |$TAIL -1)
-		#if [ "$PLUS_RECENT" -gt "$KITS_CREATED_BEFORE" ]
 		if ! $ESTKIT $1 2>&1
 		then
 			exit 0

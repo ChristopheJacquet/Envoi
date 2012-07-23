@@ -82,7 +82,7 @@ if(isset($_SESSION["login"])) {
 
 <p>Veuillez indiquer vos identifiants habituels de Supélec</p>
 
-<form action="index.php" method="post">
+<form action="index.php<? if(isset($_GET["code"])) echo "?code=" . $_GET["code"]; ?>" method="post">
     Nom d'utilisateur&nbsp;: <input name="login" placeholder="nom_pre" /><br />
     Mot de passe&nbsp;: <input name="password" type="password" /><br />
     <input type="submit" value="Connexion" />
@@ -106,10 +106,16 @@ EOF;
 }
 
 function menu_eleve() {
+    if(isset($_GET["code"])) {
+        $code = "value='{$_GET["code"]}'";
+        echo "\n<script>$(function() { $('form').submit(); });</script>\n";
+    } else {
+        $code = "";
+    }
     echo <<<EOF
 <form action="rendu.php" method="post">
 <p>Livrer un compte-rendu&nbsp;:</p>
-Code&nbsp;: <input name="code" />
+Code&nbsp;: <input name="code" {$code}/>
 <input type="submit" value="Accéder au formulaire &gt;&gt;" />
 </form>
 EOF;
