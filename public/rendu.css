@@ -90,3 +90,33 @@ table.pad {
 .padzone, .padzone input, .padzone textarea, .padzone select {
     font-size: 16pt;
 }
+
+.gridform {
+    display: table;
+}
+
+.gridform div {
+    display: table-row;
+}
+
+.gridform input[type=password], .gridform input[type=text] {
+    border-radius: 3px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
+    transition: all 0.2s linear;
+    color: #222222;
+    position: relative;
+    width: 200px;
+    padding: 4px;
+    display: table-cell;
+}
+
+.gridform input[type=password]:focus, .gridform input[type=text]:focus {
+    box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
+    outline: none;
+}
+
+.gridform label {
+    display: table-cell;
+    padding-right: 15px;
+}

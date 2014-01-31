@@ -115,7 +115,7 @@ The web server needs the write permission to not only the database file, but als
 Tests
 -----
 
-php -d include_path=.:../inc tests.
+php -d include_path=.:../inc tests
 
 
 Maintenance
@@ -123,19 +123,27 @@ Maintenance
 
 Passer aux fichiers sur disque :
 
-1) Créer un répertoire data
+1) Mettre en le système WIP
 
-2) Dans install
+2) Faire un backup
+
+mysqldump --max_allowed_packet=512M -p --result-file=livraison.sql livraison
+
+3) Mettre à jour le logiciel
+
+4) Créer un répertoire data
+
+5) Dans install
 php -d include_path=.:../inc extractfiles.php
 
-3) Faire 
+6) Faire 
 un chgrp -R : mettre le groupe apache
 et un chmod -R : mettre g+w
 
-4) Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
+7) Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
 (par exemple avec phpMyAdmin)
 
 
-5) Optimiser la base :
+8) Optimiser la base :
 
 mysqlcheck -o livraison

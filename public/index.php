@@ -82,10 +82,10 @@ if(isset($_SESSION["login"])) {
 
 <p>Veuillez indiquer vos identifiants habituels de Supélec</p>
 
-<form action="index.php<? if(isset($_GET["code"])) echo "?code=" . $_GET["code"]; ?>" method="post">
-    Nom d'utilisateur&nbsp;: <input name="login" placeholder="nom_pre" /><br />
-    Mot de passe&nbsp;: <input name="password" type="password" /><br />
-    <input type="submit" value="Connexion" />
+<form action="index.php<? if(isset($_GET["code"])) echo "?code=" . $_GET["code"]; ?>" method="post" class="gridform">
+    <div><label>Nom d'utilisateur&nbsp;:</label> <input name="login" placeholder="nom_pre" type="text" autofocus></div>
+    <div><label>Mot de passe&nbsp;:</label> <input name="password" type="password"></div>
+    <div><input type="submit" value="Connexion"></div>
 </form>
 
 
@@ -113,10 +113,14 @@ function menu_eleve() {
         $code = "";
     }
     echo <<<EOF
-<form action="rendu.php" method="post">
+
 <p>Livrer un compte-rendu&nbsp;:</p>
-Code&nbsp;: <input name="code" {$code}/>
-<input type="submit" value="Accéder au formulaire &gt;&gt;" />
+
+<form action="rendu.php" method="post" class="gridform">
+<div>
+<label>Code&nbsp;:</label> <input name="code" {$code} type="text" autofocus>
+<input type="submit" value="Accéder au formulaire &gt;&gt;">
+</div>
 </form>
 EOF;
 }
