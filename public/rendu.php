@@ -217,26 +217,37 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         $fileSize = $file['size'];
                         $fileType = $file['type'];
 
+                        
+
+                        $idFichier = substr($formFileId, 7);
+
+                        $req = "INSERT INTO fichierDonne (idRenduDonne, nom, type, idFichier) ".
+                            "VALUES (?, ?, ?, ?)";
+
+                        //echo "<!-- $req -->";
+
+                        $idFichierDonne = DB::insert_autoinc($req, 
+                                array($idRenduDonne, $fileName, $fileType, $idFichier));
+
+                        fileIdToPath($idFichierDonne, $fspath, $fsname);
+                        createFilePath($fspath);
+                        
+                        
+                        // déplace à son emplacement final dans le data store
+                        move_uploaded_file($tmpName, $fspath . $fsname);
+                        
+                        /*
                         $fp      = fopen($tmpName, 'r');
                         $content = fread($fp, filesize($tmpName));
                         #$content = addslashes($content);  No longer needed with PDO
                         fclose($fp);
-
-                        $idFichier = substr($formFileId, 7);
-
-                        $req = "INSERT INTO fichierDonne (idRenduDonne, nom, contenu, type, idFichier) ".
-                            "VALUES (?, ?, ?, ?, ?)";
-
-                        //echo "<!-- $req -->";
-
-                        DB::request($req, array($idRenduDonne, $fileName, $content, $fileType, $idFichier));
-
-                        if(true)
-                            echo "<p>Fichier $fileName téléchargé</p>";
+                         * */
 
                         // Ajout à l'e-mail
-                        $mail->AddAttachment($tmpName, $fileName);
-
+                        $mail->AddAttachment($fspath . $fsname, $fileName);
+                        
+                        if(true)
+                            echo "<p>Fichier $fileName téléchargé</p>";
 
                     } else {
                         echo "<p>Fichier " . $file["name"] . " sauté car de taille zéro.</p>";
@@ -259,11 +270,13 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                 }
 
                 // Suppression des fichiers temporaires
+                /* Inutile maintenant qu'on les déplace...
                 foreach($_FILES as $formFileId => $file) {
                     if($file["size"] > 0) {
                         unlink($file["tmp_name"]);
                     }
                 }
+                 * */
                 
 
                 echo "<div class='success'><p>Compte-rendu livré avec succès. <a href=\"index.php\">Retour à l'accueil</a>.</p></div>";

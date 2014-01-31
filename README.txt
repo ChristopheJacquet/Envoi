@@ -110,3 +110,29 @@ Créer à la main ("touch") le fichier de base de données.
 Le serveur web doit pouvoir écrire dans ce fichier.
 The web server needs the write permission to not only the database file, but also the containing directory of that file.
 	--> sinon cela provoque "General error: 14 unable to open database file"
+
+
+Tests
+-----
+
+php -d include_path=.:../inc tests.
+
+
+Maintenance
+-----------
+
+Passer aux fichiers sur disque :
+
+php -d include_path=.:../inc extractfiles.php
+
+puis faire 
+un chgrp -R : mettre le groupe apache
+et un chmod -R : mettre g+w
+
+Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
+(par exemple avec phpMyAdmin)
+
+
+Optimiser la base :
+
+mysqlcheck -o livraison

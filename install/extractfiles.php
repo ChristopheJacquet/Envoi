@@ -1,6 +1,5 @@
 <?php
 
-
 /*
     This file is part of Envoi.
 
@@ -20,23 +19,20 @@
     (c) Christophe Jacquet, 2009-2011.
  */
 
+require("tools.php");
 
-session_start();
+$res = DB::request(
+        "SELECT idFichierDonne, contenu FROM fichierDonne");
 
-if(!isset($_SESSION["role"]) || $_SESSION["role"] != "PROF") die("Vous devez être connecté.");
-
-if(!isset($_GET["id"])) die("Vous devez donner un identifiant.");
-
-$id = $_GET["id"];
-
-$req = "SELECT type, nom FROM fichierDonne WHERE idFichierDonne=" . $id;
-
-$row = DB::request_one_row($req);
-
-header("Content-type: " . $row->type);
-header("Content-Disposition: inline; filename=\"" . $row->nom ."\"");
-
-fileIdToPath($id, $fspath, $fsname);
-readfile($fspath . $fsname);
-
-?>
+while($row = $res->fetch()) {
+    fileIdToPath($row->idFichierDonne, $path, $name);
+    
+    createFilePath($path);
+    echo "$path $name: ";
+    if(file_put_contents($path . $name, $row->contenu) === FALSE) {
+        echo "FAILED!\n";
+        break;
+    } else {
+        echo "OK\n";
+    }
+}

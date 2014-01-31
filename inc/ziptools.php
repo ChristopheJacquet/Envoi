@@ -22,6 +22,8 @@
 
 
 function open_zip_archive($id) {
+    /*
+     * No longer necessary since files are already on the filesystem
     $req = "SELECT contenu FROM fichierDonne WHERE idFichierDonne=?";
     $row = DB::request_one_row($req, array($id));
 
@@ -33,16 +35,18 @@ function open_zip_archive($id) {
 
     fwrite($tmp, $row->contenu);
     fclose($tmp);
+    */
+    
+    fileIdToPath($id, $fspath, $fsname);
+    
+    if(is_numeric($zip = zip_open($fspath . $fsname))) return false;
 
-    if(is_numeric($zip = zip_open($tmpname))) return false;
-
-    return array("handle" => $zip, "tmpname" => $tmpname);
+    return array("handle" => $zip);
 }
 
 function list_zip_files($id) {
     if(! $r = open_zip_archive($id)) return false;
     $zip = $r["handle"];
-    $tmpname = $r["tmpname"];
 
     $result = Array();
     $idx = 0;
@@ -57,8 +61,7 @@ function list_zip_files($id) {
     }
 
     zip_close($zip);
-    unlink($tmpname);
-
+    
     return $result;
 }
 
@@ -69,7 +72,6 @@ function endswith($str, $motif) {
 function dump_file_in_zip($zipId, $fileId) {
     $r = open_zip_archive($zipId);
     $zip = $r["handle"];
-    $tmpname = $r["tmpname"];
 
     $idx = 0;
     while($entry = zip_read($zip)) {
@@ -77,15 +79,10 @@ function dump_file_in_zip($zipId, $fileId) {
             echo "<pre class=\"brush: java\">";
             echo htmlspecialchars(zip_entry_read($entry, zip_entry_filesize($entry)));
             echo "</pre>";
-            //zip_close($zip);
-            //unlink($tmpname);
             return;
         }
         $idx++;
     }
-
-    //zip_close($zip);
-    //unlink($tmpname);
 
     echo "File not found in archive.";
 }

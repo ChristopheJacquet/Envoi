@@ -82,10 +82,22 @@ if(!isset($_GET["id"])) {
 
         // liste des fichiers
 
-        $req = "SELECT idFichierDonne, nom, contenu FROM fichierDonne WHERE idRenduDonne=?";
+        $req = "SELECT idFichierDonne, nom FROM fichierDonne WHERE idRenduDonne=?";        
         $res2 = DB::request($req, array($idRenduDonne));
         while($r = $res2->fetch()) {
-            $zip->addFromString("{$path}/{$r->nom}", $r->contenu);
+            fileIdToPath($r->idFichierDonne, $fspath, $fsname);
+            if(is_file($fspath . $fsname)) {
+                $zip->addFile($fspath . $fsname, "{$path}/{$r->nom}");
+                /*
+                echo "addFile $fspath $fsname: ";
+                echo "  ==> ";
+                echo filesize($tmpname);
+                echo "\n";
+                 * 
+                 */
+            } else {
+                $zip->addFromString("{$path}/{$r->nom}", "File ID {$r->idFichierDonne} missing; this is probably a bug.");
+            }
         }
 
         

@@ -1,6 +1,5 @@
 <?php
 
-
 /*
     This file is part of Envoi.
 
@@ -17,26 +16,25 @@
     You should have received a copy of the GNU General Public License
     along with Envoi.  If not, see <http://www.gnu.org/licenses/>.
 
-    (c) Christophe Jacquet, 2009-2011.
+    (c) Christophe Jacquet, 2009-2014.
  */
 
+include("tools.php");
 
-session_start();
+echo "*** fileIdToPath ***\n";
 
-if(!isset($_SESSION["role"]) || $_SESSION["role"] != "PROF") die("Vous devez être connecté.");
+$ids = array(0x12, 0x1212, 0x12345, 0x78654312);
 
-if(!isset($_GET["id"])) die("Vous devez donner un identifiant.");
+foreach($ids as $i) {
+    fileIdToPath($i, $p, $d);
+    echo sprintf("%8x: ", $i);
+    echo "$p $d\n";
+}
 
-$id = $_GET["id"];
 
-$req = "SELECT type, nom FROM fichierDonne WHERE idFichierDonne=" . $id;
+echo "*** create dirs ***\n";
+//Local::$basedir
 
-$row = DB::request_one_row($req);
-
-header("Content-type: " . $row->type);
-header("Content-Disposition: inline; filename=\"" . $row->nom ."\"");
-
-fileIdToPath($id, $fspath, $fsname);
-readfile($fspath . $fsname);
-
-?>
+echo mkdir("/tmp/a/b", 0777, true);
+echo mkdir("/tmp/a/c", 0777, true);
+echo mkdir("/tmp/a/c/d", 0777, true);

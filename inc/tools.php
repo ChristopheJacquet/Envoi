@@ -93,6 +93,35 @@ function foot() {
 FIN;
 }
 
+
+function fileIdToPath($id, &$path, &$filename) {
+    $path = "";
+    $limit = 256;
+    
+    $filename = sprintf("%x", $id);
+    // ensure the filename length is even: it allows for better display
+    // of the file listing
+    if(strlen($filename) % 2 == 1) {
+        $filename = "0" . $filename;
+    }
+    
+    while($id >= $limit) {
+        $path .= sprintf("x%02x/", $id % $limit);
+        $id /= $limit;
+    }
+    
+    $path = Local::$basedir . "/data/" . $path;
+}
+
+
+function createFilePath($path) {
+    if(is_dir($path) === FALSE) {
+        mkdir($path, 0777, true);
+    }
+    
+    return $path;
+}
+
 #function scriptdir() {
 #    $script_directory = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
 #    return $script_directory . "/scripts/";

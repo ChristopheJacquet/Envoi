@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS `fichierDonne` (
   `idFichier` int(11) NOT NULL,
   `idRenduDonne` int(11) NOT NULL,
   `nom` varchar(70) COLLATE utf8_unicode_ci NOT NULL,
-  `contenu` longblob NOT NULL,
   `type` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`idFichierDonne`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -103,7 +102,6 @@ CREATE TABLE IF NOT EXISTS `fichierDonne` (
   `idFichier` INTEGER NOT NULL,
   `idRenduDonne` INTEGER NOT NULL,
   `nom` varchar(70)  NOT NULL,
-  `contenu` longblob NOT NULL,
   `type` varchar(40)  NOT NULL
 );
 EOF
