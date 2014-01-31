@@ -123,16 +123,19 @@ Maintenance
 
 Passer aux fichiers sur disque :
 
+1) Créer un répertoire data
+
+2) Dans install
 php -d include_path=.:../inc extractfiles.php
 
-puis faire 
+3) Faire 
 un chgrp -R : mettre le groupe apache
 et un chmod -R : mettre g+w
 
-Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
+4) Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
 (par exemple avec phpMyAdmin)
 
 
-Optimiser la base :
+5) Optimiser la base :
 
 mysqlcheck -o livraison
