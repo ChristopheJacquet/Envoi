@@ -120,3 +120,9 @@ table.pad {
     display: table-cell;
     padding-right: 15px;
 }
+
+#version {
+    float: right;
+    font-style: italic;
+    color: #999;
+}

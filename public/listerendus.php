@@ -24,12 +24,21 @@
 head("Liste des livraisons", "PROF");
 
 $res = DB::request(
-        "SELECT idRendu, code, titre FROM rendu WHERE idEnseignant=? ORDER BY date DESC", 
+        # subtract 7 months from the date so that a school year fits entirely
+        # into a calendary year
+        "SELECT idRendu, code, titre, YEAR(DATE_ADD(date, INTERVAL -7 MONTH)) y FROM rendu WHERE idEnseignant=? ORDER BY date DESC", 
         array($_SESSION["login"]));
 
-echo "<ul>\n";
+$curYear = 0;
 
 while($row = $res->fetch()) {
+    if($curYear != $row->y) {
+        if($curYear > 0) {
+            echo "</ul>\n";
+        }
+        $curYear = $row->y;
+        echo "<h2>" . $curYear . "-" . ($curYear+1) . "</h2>\n<ul>\n";
+    }
     echo "<li><a href=\"voirrendu.php?id=" . $row->idRendu . "\">" . $row->code . " &mdash; " . htmlspecialchars($row->titre) . "</a></li>\n";
 }
 echo "</ul>";
