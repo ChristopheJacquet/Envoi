@@ -56,6 +56,8 @@ if(!isset($_GET["id"])) {
     echo "<table>\n";
     echo "<tr><th>Élèves</th><th>Date</th><th>Commentaire</th><th>Fichiers</th></tr>\n";
 
+    $idCount = 0;
+    
     while($row = $res->fetch()) {
         $idRenduDonne = $row->idRenduDonne;
 
@@ -76,11 +78,13 @@ if(!isset($_GET["id"])) {
         while($r = $res2->fetch()) {
             echo "<a href=\"fichier.php?id=" . $r->idFichierDonne . "\">" . htmlspecialchars($r->nom) . "</a>";
             if($files = list_zip_files($r->idFichierDonne)) {
-                echo " (";
+                $htmlid = "zip" + $idCount;
+                $idCount++;
+                echo " <a href='#' onclick='$(\"#{$htmlid}\").toggle(); return false;'>▶</a> <span id='{$htmlid}' class='closedsection'>(";
                 foreach($files as $id => $filename) {
                     echo "<a href=\"zipfichier.php?zipId=" . $r->idFichierDonne . "&fileId=$id\">$filename</a> | ";
                 }
-                echo ") ";
+                echo ")</span> ";
             }
             echo "<br />";
         }
@@ -90,6 +94,7 @@ if(!isset($_GET["id"])) {
 
     echo "</table>";
 
+    echo "<p><a href=\"#\" onclick='$(\".closedsection\").show(); return false;'>Déployer le contenu de tous les fichiers ZIP</a>.</p>";
     echo "<p><a href=\"ziprendu.php?id=$idRendu\">Télécharger tous les fichiers livrés sous forme d'archive ZIP</a>.</p>";
     echo "<p><a href=\"suppr.php?id=$idRendu\">Supprimer cette livraison (irréversible) ; le code vous sera demandé</a>.</p>";
 }

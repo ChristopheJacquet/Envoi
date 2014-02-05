@@ -76,6 +76,11 @@ function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
         <title>$metatitre</title>
         <link rel="stylesheet" type="text/css" href="rendu.css" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script>
+            $(function() {
+                $(".closedsection").hide();
+            });
+        </script>
         <meta name="format-detection" content="telephone=no" />
     </head>
     <body>
