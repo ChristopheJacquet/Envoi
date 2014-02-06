@@ -54,10 +54,18 @@ function list_zip_files($id) {
         $path = zip_entry_name($entry);
         $components = explode("/", $path);
         $filename = $components[count($components)-1];
-        if(substr($filename, 0, 1) != "." && !endswith($filename, ".class") && !endswith($filename, ".prefs")) {
+        /*
+         * Remove
+         * - filenames that begin with .
+         * - .class
+         * - .prefs
+         * - paths ending with / (directory names)
+         * - paths that contain .metadata
+         */
+        if(substr($filename, 0, 1) != "." && !endswith($filename, ".class") && !endswith($filename, ".prefs") && !endswith($path, "/") && strpos($path, ".metadata")===FALSE) {
             $result[$idx] = $filename;
+            $idx++;
         }
-        $idx++;
     }
 
     zip_close($zip);
