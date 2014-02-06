@@ -64,8 +64,8 @@ function list_zip_files($id) {
          */
         if(substr($filename, 0, 1) != "." && !endswith($filename, ".class") && !endswith($filename, ".prefs") && !endswith($path, "/") && strpos($path, ".metadata")===FALSE) {
             $result[$idx] = $filename;
-            $idx++;
         }
+        $idx++;
     }
 
     zip_close($zip);
