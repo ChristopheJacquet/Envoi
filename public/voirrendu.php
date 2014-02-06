@@ -70,7 +70,7 @@ if(!isset($_GET["id"])) {
         }
         echo "(" . $row->login . ")";
 
-        echo "</td><td>" . $row->date . "</td><td>" . htmlspecialchars($row->commentaire) . "</td><td>";
+        echo "</td><td>" . $row->date . "</td><td>" . str_replace("\n", "<br>", htmlspecialchars($row->commentaire)) . "</td><td>";
 
         // liste des fichiers
 
@@ -94,7 +94,7 @@ if(!isset($_GET["id"])) {
 
     echo "</table>";
 
-    echo "<p><a href=\"#\" onclick='$(\".closedsection\").show(); return false;'>Déployer le contenu de tous les fichiers ZIP</a>.</p>";
+    echo "<p>Contenu de tous les fichiers ZIP&nbsp;: <a href=\"#\" onclick='$(\".closedsection\").show(); return false;'>déployer</a> | <a href=\"#\" onclick='$(\".closedsection\").hide(); return false;'>escamoter</a>.</p>";
     echo "<p><a href=\"ziprendu.php?id=$idRendu\">Télécharger tous les fichiers livrés sous forme d'archive ZIP</a>.</p>";
     echo "<p><a href=\"suppr.php?id=$idRendu\">Supprimer cette livraison (irréversible) ; le code vous sera demandé</a>.</p>";
 }
