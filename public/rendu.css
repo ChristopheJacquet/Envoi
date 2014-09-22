@@ -126,3 +126,34 @@ table.pad {
     font-style: italic;
     color: #999;
 }
+
+.rendu_summary td, table.rendu_summary, .rendu_summary tr {
+    border: none;
+}
+
+.rendu_summary td:nth-child(2) {
+    padding-right: 40px;
+}
+
+.rendu_summary tr {
+    border-top: 1px solid #AAA;
+    border-bottom: 1px solid #AAA;
+}
+
+.rendu_summary li {
+    list-style-type: none;
+}
+
+.rendu_summary ul {
+    padding-left: 0;
+}
+
+.state_on {
+    color: #2B2;
+    font-weight: bold;
+}
+
+.state_off {
+    color: #B22;
+    font-weight: bold;
+}

@@ -86,9 +86,12 @@ function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
     <body>
     $loggedin
 
-    <h1>$h1titre</h1>
 FIN;
+    
+    if($titre != 'NONE') {
+        echo "<h1>$h1titre</h1>";
     }
+}
 }
 
 function foot() {

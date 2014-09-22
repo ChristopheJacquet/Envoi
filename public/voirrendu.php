@@ -23,7 +23,7 @@
 
 require("ziptools.php");
 
-head("Livraison", "PROF");
+head("NONE", "PROF");
 
 if(!isset($_GET["id"])) {
     echo "<p>Vous devez indiquer un numéro de livraison. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
@@ -44,31 +44,47 @@ if(!isset($_GET["id"])) {
             "SELECT code, titre, COUNT(idFichier) C, notification FROM rendu R LEFT OUTER JOIN fichier F ON R.idRendu=F.idRendu WHERE R.idRendu=? GROUP BY F.idRendu",
             array($idRendu));
     if(! $row) die("Mauvais ID de livraison.");
-    echo "<h1>" . htmlspecialchars($row->titre) . " (code " . $row->code . ")</h1>";
+    echo "<h1>Livraison&nbsp;: " . htmlspecialchars($row->titre) . "</h1>\n";
+    echo "<h2>Spécifications</h2>\n";
+
+    echo "<table class='rendu_summary'>\n";
     
+    # Code
+    echo "<tr><td><img src='img/icon_code.png' alt='Code'></td><td>Code</td><td>" . $row->code . "</td></tr>\n";
+    
+    # URL
     $url = baseURL() . "?code=" . $row->code;
     $notification = $row->notification;
-    echo "<p>URL : <a href='{$url}'>{$url}</a></p>";
+    echo "<tr><td><img src='img/icon_url.png' alt='URL'></td><td>URL</td> <td><a href='{$url}'>{$url}</a></td></tr>\n";
 
-    echo "<h2>{$row->C} fichiers</h2>\n<ul>\n";
+    # Fichiers
+    echo "<tr><td><img src='img/icon_file.png' alt='Files'></td><td>Fichiers ({$row->C})</td>\n<td><ul>";
     $res = DB::request("SELECT nom, script, idFichier, optionnel FROM fichier WHERE idRendu=?", array($idRendu));
     while($row = $res->fetch()) {
         echo "<li>{$row->nom}, {$row->script}, " . ($row->optionnel ? "optionnel" : "imposé") . " [<a href=\"supprfichier.php?idFichier={$row->idFichier}&idRendu={$idRendu}\">supprimer</a>]</li>\n";
     }
     echo "</ul>\n";
 
-    echo "<p><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a>.</p>";
+    echo "<p><img src='img/icon_plus.png' alt='(+)' style='margin-right: 7px;'><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a></p>";
     
+    echo "</td></tr>\n";
     
+    # Notifications
+    echo "<tr><td><img src='img/icon_notification.png' alt='Notification'></td><td>Notifications</td>";
     if(is_null($notification)) {
-        echo "<p>Notifications désactivées. <a href='voirrendu.php?id=$idRendu&amp;do=notifen'>Activer</a>.</p>";
+        echo "<td><span class='state_off'>Désactivées</span> <a href='voirrendu.php?id=$idRendu&amp;do=notifen'>⇒ Activer</a></td>";
     } else {
-        echo "<p>Notifications activées vers&nbsp;: $notification. <a href='voirrendu.php?id=$idRendu&amp;do=notifdis'>Désactiver</a>.</p>";
+        echo "<td><span class='state_on'>Activées</span> vers&nbsp;: $notification <a href='voirrendu.php?id=$idRendu&amp;do=notifdis'>⇒ Désactiver</a></td>";
     }
+    echo "</tr>\n";
+    echo "</table>\n";
     
+    echo "<h2>Livraisons effectuées</h2>\n";
     
     $obj = DB::request_one_row("SELECT COUNT(DISTINCT login) nb FROM renduDonne WHERE idRendu=?", array($idRendu));
     echo "<p>{$obj->nb} groupes ont effectué une livraison.</p>";
+    echo "<p><a href=\"ziprendu.php?id=$idRendu\">⇒ Télécharger tous les fichiers livrés sous forme d'archive ZIP</a></p>";
+
     
     $res = DB::request("SELECT date, commentaire, login, idRenduDonne FROM renduDonne WHERE idRendu=? ORDER BY date", array($idRendu));
 
@@ -114,7 +130,7 @@ if(!isset($_GET["id"])) {
     echo "</table>";
 
     echo "<p>Contenu de tous les fichiers ZIP&nbsp;: <a href=\"#\" onclick='$(\".closedsection\").show(); return false;'>déployer</a> | <a href=\"#\" onclick='$(\".closedsection\").hide(); return false;'>escamoter</a>.</p>";
-    echo "<p><a href=\"ziprendu.php?id=$idRendu\">Télécharger tous les fichiers livrés sous forme d'archive ZIP</a>.</p>";
+    echo "<h2>Suppression</h2>\n";
     echo "<p><a href=\"suppr.php?id=$idRendu\">Supprimer cette livraison (irréversible) ; le code vous sera demandé</a>.</p>";
 }
 
