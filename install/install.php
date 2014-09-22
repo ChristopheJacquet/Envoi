@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `rendu` (
   `date` date NOT NULL,
   `titre` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `code` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `notification` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`idRendu`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 EOF

@@ -29,14 +29,25 @@ if(!isset($_GET["id"])) {
     echo "<p>Vous devez indiquer un numéro de livraison. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
 } else {
     $idRendu = $_GET["id"];
+    
+    if(isset($_GET["do"])) {
+        $do = $_GET["do"];
+        
+        if($do == "notifen") {
+            DB::request("UPDATE rendu SET notification=? WHERE idRendu=?", array($_SESSION["mail"], $idRendu));
+        } elseif($do == "notifdis") {
+            DB::request("UPDATE rendu SET notification=NULL WHERE idRendu=?", array($idRendu));
+        }
+    }
 
     $row = DB::request_one_row(
-            "SELECT code, titre, COUNT(idFichier) C FROM rendu R LEFT OUTER JOIN fichier F ON R.idRendu=F.idRendu WHERE R.idRendu=? GROUP BY F.idRendu",
+            "SELECT code, titre, COUNT(idFichier) C, notification FROM rendu R LEFT OUTER JOIN fichier F ON R.idRendu=F.idRendu WHERE R.idRendu=? GROUP BY F.idRendu",
             array($idRendu));
     if(! $row) die("Mauvais ID de livraison.");
     echo "<h1>" . htmlspecialchars($row->titre) . " (code " . $row->code . ")</h1>";
     
     $url = baseURL() . "?code=" . $row->code;
+    $notification = $row->notification;
     echo "<p>URL : <a href='{$url}'>{$url}</a></p>";
 
     echo "<h2>{$row->C} fichiers</h2>\n<ul>\n";
@@ -47,6 +58,14 @@ if(!isset($_GET["id"])) {
     echo "</ul>\n";
 
     echo "<p><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a>.</p>";
+    
+    
+    if(is_null($notification)) {
+        echo "<p>Notifications désactivées. <a href='voirrendu.php?id=$idRendu&amp;do=notifen'>Activer</a>.</p>";
+    } else {
+        echo "<p>Notifications activées vers&nbsp;: $notification. <a href='voirrendu.php?id=$idRendu&amp;do=notifdis'>Désactiver</a>.</p>";
+    }
+    
     
     $obj = DB::request_one_row("SELECT COUNT(DISTINCT login) nb FROM renduDonne WHERE idRendu=?", array($idRendu));
     echo "<p>{$obj->nb} groupes ont effectué une livraison.</p>";

@@ -33,15 +33,16 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
     // un code existe, mais le formulaire reste à remplir
     $code = $_POST["code"];
 
-    $res = DB::request("SELECT idRendu, titre FROM rendu WHERE code=?", array($code));
+    $res = DB::request("SELECT idRendu, titre, notification FROM rendu WHERE code=?", array($code));
     $all = $res->fetchAll();
     if(count($all) < 1) {
-        echo "<p>Mauvais code de livraison. Veuillez vérifier votre saisie. <a href=\"index.php\">Retour au formulaire</a>.</p>";
+        echo "<p>Mauvais code de livraison. Veuillez vérifier votre saisie. <a href=\"index.php\">Retour à la saisie du code</a>.</p>";
     } else {
         // OK vérifications faites
         $obj = $all[0];
         $titre = $obj->titre;
         $idRendu = $obj->idRendu;
+        $notification = $obj->notification;
 
 
         $afficheFormulaire = true;
@@ -179,7 +180,7 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         
                     }
                 }
-
+                
             }
 
             if(!$conformes) {
@@ -197,11 +198,14 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         array($commentaire, $idRendu, $login));
 
 
+                $tousParticipants = "";
                 // traitement participants
                 for($i = 1; $i<=3; $i++) {
                     if(isset($_POST["nom" . $i]) && trim($_POST["nom" . $i]) != "" && trim($_POST["email" . $i]) != "") {
                         $nom = $_POST["nom" . $i];
                         $prenom = $_POST["prenom" . $i];
+                        if(strlen($tousParticipants) > 0) $tousParticipants .= ", ";
+                        $tousParticipants .= $nom . " " . $prenom;
                         $email = $_POST["email" . $i];
                         $req = "INSERT INTO participant (idRenduDonne, nom, prenom, email) VALUES (?, ?, ?, ?)";
                         DB::request($req, array($idRenduDonne, $nom, $prenom, $email));
@@ -277,9 +281,30 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                     }
                 }
                  * */
-                
 
+                
                 echo "<div class='success'><p>Compte-rendu livré avec succès. <a href=\"index.php\">Retour à l'accueil</a>.</p></div>";
+
+                
+                // Notification à l'enseignant ?
+                if(! is_null($notification)) {
+                    echo "<p>Envoi d'une notification à l'enseignant: <!-- ";
+                    try {
+                        $mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
+                        $mail->IsSMTP(); // telling the class to use SMTP
+                        $mail->Host       = Local::$smtp_relay; // SMTP server
+                        $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
+                        $mail->SetFrom(Local::$from_email, Local::$from_name);
+                        $mail->CharSet = "UTF-8";
+                        $mail->Subject = "Livraison $code : $tousParticipants";
+                        $mail->Body = "Livraison du travail : " . $obj->titre . "\n\nÉtudiants : " . $tousParticipants . "\n\nCommentaire :\n" . $commentaire;
+                        $mail->AddAddress($notification, $notification);
+                        $mail->Send();
+                        echo " --> OK.</p>\n";
+                    } catch (Exception $ex) {
+                        echo " --> Echec. <span style='color:red;'>Veuillez lui signaler.</span></p>\n";
+                    }
+                }
 
 
                 $afficheFormulaire = false;
