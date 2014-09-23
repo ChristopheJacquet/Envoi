@@ -147,3 +147,13 @@ et un chmod -R : mettre g+w
 8) Optimiser la base :
 
 mysqlcheck -o livraison
+
+
+Licences
+--------
+
+Icône gamepad : http://commons.wikimedia.org/wiki/File:Gnome-input-gaming.svg (GPL)
+Icône URL : http://commons.wikimedia.org/wiki/File:Gnome-web-browser.svg (GPL)
+Icône document : http://commons.wikimedia.org/wiki/File:Gnome-x-office-document.svg (GPL)
+Icône e-mail : http://commons.wikimedia.org/wiki/File:Gnome-mail-unread.svg (GPL)
+Icône plus : http://commons.wikimedia.org/wiki/File:Symbol_support_vote.svg (domaine public)

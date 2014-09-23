@@ -148,6 +148,24 @@ table.pad {
     padding-left: 0;
 }
 
+.filelist {
+    border: none;
+}
+
+.filelist th {
+    border: none;
+    background-color: transparent;
+    text-align: left;
+}
+
+.filelist tr:first-child {
+    border-top: none;
+}
+
+.filelist td, .filelist th {
+    padding-right: 20px;
+}
+
 .state_on {
     color: #2B2;
     font-weight: bold;

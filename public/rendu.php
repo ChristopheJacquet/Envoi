@@ -158,6 +158,16 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         $_POST["commentaire"] . "\n\n" .
                         "Les fichiers suivants ont ete recus :\n";
                 //$mail->MsgHTML($mail->AltBody);
+
+                // E-mail de notification (enseignant)
+                $notifmail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
+                $notifmail->IsSMTP(); // telling the class to use SMTP
+                $notifmail->Host       = Local::$smtp_relay; // SMTP server
+                $notifmail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
+                $notifmail->SetFrom(Local::$from_email, Local::$from_name);
+                $notifmail->ClearReplyTos();
+                $notifmail->CharSet = "UTF-8";
+
                 // Fin préparation e-mail
 
                 // traitement participants
@@ -168,6 +178,7 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         echo "<!-- ";
                         try {
                             $mail->AddAddress($email, $email);
+                            $notifmail->AddReplyTo($email, trim($_POST["prenom" . $i]) . " " . trim($_POST["nom" . $i]));
                             echo " -->";
                             echo "<p>Destinataire de l'e-mail de confirmation : $email</p>";
                         } catch (phpmailerException $e) {
@@ -205,7 +216,7 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         $nom = $_POST["nom" . $i];
                         $prenom = $_POST["prenom" . $i];
                         if(strlen($tousParticipants) > 0) $tousParticipants .= ", ";
-                        $tousParticipants .= $nom . " " . $prenom;
+                        $tousParticipants .= $prenom . " " . $nom;
                         $email = $_POST["email" . $i];
                         $req = "INSERT INTO participant (idRenduDonne, nom, prenom, email) VALUES (?, ?, ?, ?)";
                         DB::request($req, array($idRenduDonne, $nom, $prenom, $email));
@@ -290,16 +301,10 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                 if(! is_null($notification)) {
                     echo "<p>Envoi d'une notification à l'enseignant: <!-- ";
                     try {
-                        $mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
-                        $mail->IsSMTP(); // telling the class to use SMTP
-                        $mail->Host       = Local::$smtp_relay; // SMTP server
-                        $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
-                        $mail->SetFrom(Local::$from_email, Local::$from_name);
-                        $mail->CharSet = "UTF-8";
-                        $mail->Subject = "Livraison $code : $tousParticipants";
-                        $mail->Body = "Livraison du travail : " . $obj->titre . "\n\nÉtudiants : " . $tousParticipants . "\n\nCommentaire :\n" . $commentaire;
-                        $mail->AddAddress($notification, $notification);
-                        $mail->Send();
+                        $notifmail->Subject = "Livraison $code : $tousParticipants";
+                        $notifmail->Body = "Livraison du travail : " . $obj->titre . "\n\nÉtudiants : " . $tousParticipants . "\n\nCommentaire :\n" . $commentaire;
+                        $notifmail->AddAddress($notification, $notification);
+                        $notifmail->Send();
                         echo " --> OK.</p>\n";
                     } catch (Exception $ex) {
                         echo " --> Echec. <span style='color:red;'>Veuillez lui signaler.</span></p>\n";

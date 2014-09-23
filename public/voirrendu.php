@@ -25,6 +25,40 @@ require("ziptools.php");
 
 head("NONE", "PROF");
 
+
+function scriptlist() {
+    $list = scandir(Local::$basedir . "/filters/");
+    return array_filter($list, "is_script_filename");
+}
+
+function is_script_filename($name) {
+    return !(substr($name, 0, 1) == ".");
+}
+
+function insertFileEditRow($nom = "", $script = "", $optionnel = FALSE, $id = null) {
+    $scripts = "";
+    foreach(scriptlist() as $s) {
+        $sel = ($s == $script) ? "selected" : "";
+        $scripts .= "<option value=\"$s\" $sel>$s</option>";
+    }
+    
+    echo "<tr><td><input name='nom' required autofocus value='" . htmlspecialchars($nom) . 
+            "'></td><td><select name='script'>$scripts</select></td>" . 
+            "<td><input type='checkbox' name='optionnel' " . ($optionnel ? "checked" : "") . ">" .
+            "</td><td>";
+    
+    if($id == null) {
+        echo "<input type='submit' value='Ajouter'>";
+    } else {
+        echo "<input type='submit' value='Valider'><input type='hidden' name='idFichier' value='$id'>";
+    }
+    
+    echo "</tr>\n";
+}
+
+
+
+
 if(!isset($_GET["id"])) {
     echo "<p>Vous devez indiquer un numéro de livraison. <a href=\"index.php\">Retour à l'accueil</a>.</p>";
 } else {
@@ -35,8 +69,40 @@ if(!isset($_GET["id"])) {
         
         if($do == "notifen") {
             DB::request("UPDATE rendu SET notification=? WHERE idRendu=?", array($_SESSION["mail"], $idRendu));
+            
         } elseif($do == "notifdis") {
             DB::request("UPDATE rendu SET notification=NULL WHERE idRendu=?", array($idRendu));
+            
+        } elseif($do == "filemod") {
+            if(isset($_POST["nom"]) && isset($_POST["script"])) {
+                if(isset($_POST["idFichier"])) {
+                    # modification
+                    if( DB::request(
+                            "UPDATE fichier SET nom=?, script=?, optionnel=? WHERE idRendu=? AND idFichier=?",
+                            array( $_POST["nom"], $_POST["script"], isset($_POST["optionnel"]) ? 1 : 0, $idRendu, $_POST["idFichier"] ) ) ) {
+                        echo "<div class='info'>Spécification de fichier modifiée.</div>\n";
+                    }
+                } else {
+                    # création
+                    if( DB::request(
+                        "INSERT INTO fichier (idRendu, nom, script, optionnel) VALUES (?, ?, ?, ?)",
+                        array($idRendu, $_POST["nom"], $_POST["script"], isset($_POST["optionnel"]) ? 1 : 0)) ) {
+                        
+                        echo "<div class='info'>Nouvelle spécification de fichier ajoutée.</div>\n";
+                    }
+                }
+            } else {
+                echo "<div class='info'>Pas assez d'indications dans la spécification de fichier.</div>\n";
+            }
+            
+        } elseif($do == "filedel") {
+            if(isset($_GET["idFichier"])) {
+                if(DB::request("DELETE FROM fichier WHERE idFichier=?", array($_GET["idFichier"]))) {
+                    echo "<div class='info'>Spécification de fichier supprimée.</div>\n";
+                }
+            } else {
+                echo "<div class='info'>Manque le paramètre idFichier.</div>\n";
+            }
         }
     }
 
@@ -58,17 +124,32 @@ if(!isset($_GET["id"])) {
     echo "<tr><td><img src='img/icon_url.png' alt='URL'></td><td>URL</td> <td><a href='{$url}'>{$url}</a></td></tr>\n";
 
     # Fichiers
-    echo "<tr><td><img src='img/icon_file.png' alt='Files'></td><td>Fichiers ({$row->C})</td>\n<td><ul>";
-    $res = DB::request("SELECT nom, script, idFichier, optionnel FROM fichier WHERE idRendu=?", array($idRendu));
+    echo "<tr><td><img src='img/icon_file.png' alt='Files'></td><td>Fichiers ({$row->C})</td>\n<td>\n";
+    $res = DB::request("SELECT nom, script, idFichier, optionnel FROM fichier WHERE idRendu=? ORDER BY idFichier", array($idRendu));
+    echo "<form action='voirrendu.php?id=$idRendu&amp;do=filemod' method='POST'>\n";
+    echo "<table class='filelist'>";
+    echo "<tr><th>Intitulé</th><th>Script vérificateur</th><th>Optionnel</th><th></th></tr>";
+    $formInserted = FALSE;
     while($row = $res->fetch()) {
-        echo "<li>{$row->nom}, {$row->script}, " . ($row->optionnel ? "optionnel" : "imposé") . " [<a href=\"supprfichier.php?idFichier={$row->idFichier}&idRendu={$idRendu}\">supprimer</a>]</li>\n";
+        if(isset($_GET["modFichier"]) && $_GET["modFichier"] == $row->idFichier) {
+            insertFileEditRow($row->nom, $row->script, $row->optionnel, $row->idFichier);
+            $formInserted = TRUE;
+        } else {
+            echo "<tr><td>{$row->nom}</td><td>{$row->script}</td><td>" . ($row->optionnel ? "✓" : "") . "</td><td>" . 
+                    "[<a href='voirrendu.php?id=$idRendu&amp;modFichier={$row->idFichier}' class='btn_mod_file'>modifier</a>]" .
+                    "[<a href='voirrendu.php?id=$idRendu&amp;idFichier={$row->idFichier}&amp;do=filedel' class='btn_del_file'>supprimer</a>]" .
+                    "</td></tr>\n";
+        }
     }
-    echo "</ul>\n";
+    if(! $formInserted) {
+        insertFileEditRow();
+    }
+    
+    echo "</table>\n";
+    echo "</form>\n";
 
-    echo "<p><img src='img/icon_plus.png' alt='(+)' style='margin-right: 7px;'><a href=\"ajoutfichier.php?idRendu=$idRendu\">Ajouter un fichier à la livraison</a></p>";
-    
     echo "</td></tr>\n";
-    
+
     # Notifications
     echo "<tr><td><img src='img/icon_notification.png' alt='Notification'></td><td>Notifications</td>";
     if(is_null($notification)) {
@@ -78,6 +159,8 @@ if(!isset($_GET["id"])) {
     }
     echo "</tr>\n";
     echo "</table>\n";
+
+    echo "<script>connectDialog($('#btn_add_file'), 'ajoutfichier.php?idRendu={$idRendu}');</script>";
     
     echo "<h2>Livraisons effectuées</h2>\n";
     
