@@ -97,10 +97,12 @@ foot();
 
 
 function menu_prof() {
+    $prefix = baseURL();
     echo <<<EOF
 <ul>
 <li><a href="ajoutrendu.php">Ajout d'une livraison</a></li>
 <li><a href="listerendus.php">Liste des livraisons</a></li>
+<li><a href="$prefix/rss.php?id={$_SESSION['login']}">Flux RSS de vos dernières livraisons</a></li>
 </ul>
 EOF;
 }

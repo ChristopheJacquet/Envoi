@@ -26,6 +26,9 @@ php_value include_path ".:/chemin/complet/vers/répertoire/inc/"
 par exemple avec un alias
 Il est souhaitable que les autres répertoires ne soient pas accessibles par le web
 
+6) Créer un répertoire "data" accessible par Apache en lecture et écriture
+
+
 
 Configuration
 -------------
@@ -121,7 +124,8 @@ php -d include_path=.:../inc tests
 Maintenance
 -----------
 
-Passer aux fichiers sur disque :
+Passer aux fichiers sur disque (r10 -> r11 et suivantes) :
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1) Mettre en le système WIP
 
@@ -142,7 +146,6 @@ et un chmod -R : mettre g+w
 
 7) Dans la table `fichierDonne`, supprimer la colonne `contenu` de type longblob
 (par exemple avec phpMyAdmin)
-
 
 8) Optimiser la base :
 

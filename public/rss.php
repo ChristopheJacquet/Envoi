@@ -16,7 +16,9 @@ $id = $_GET["id"];
 $res = DB::request("SELECT code, titre, GROUP_CONCAT(CONCAT(prenom, ' ', nom) SEPARATOR ', ') noms, renduDonne.date FROM renduDonne JOIN rendu JOIN participant ON renduDonne.idRendu=rendu.idRendu AND renduDonne.idRenduDonne=participant.idRenduDonne WHERE idEnseignant=? GROUP BY renduDonne.idRenduDonne ORDER BY renduDonne.date DESC LIMIT 0,50", array($id));
 
 
- date_default_timezone_set("Europe/Berlin");
+date_default_timezone_set("Europe/Berlin");
+
+header("Content-Type: application/xml; charset=UTF-8");
 
 echo <<<END
 <?xml version="1.0" encoding="UTF-8" ?>

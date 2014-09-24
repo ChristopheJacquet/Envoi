@@ -19,7 +19,7 @@
  */
 
 
-html, input, textarea {
+html, input, textarea, select {
     font-family: "trebuchet ms", sans-serif;
     font-size: medium;
 }
@@ -47,11 +47,11 @@ td, th {
 }
 
 th {
-    background-color: #FFA;
+    background-color: #FFC;
 }
 
 #loggedbox {
-    background-color: #FFA;
+    background-color: #FFC;
     border: 1px solid black;
     padding: .3em;
 }
