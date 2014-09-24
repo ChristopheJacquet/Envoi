@@ -136,8 +136,8 @@ if(!isset($_GET["id"])) {
             $formInserted = TRUE;
         } else {
             echo "<tr><td>{$row->nom}</td><td>{$row->script}</td><td>" . ($row->optionnel ? "✓" : "") . "</td><td>" . 
-                    "[<a href='voirrendu.php?id=$idRendu&amp;modFichier={$row->idFichier}' class='btn_mod_file'>modifier</a>]" .
-                    "[<a href='voirrendu.php?id=$idRendu&amp;idFichier={$row->idFichier}&amp;do=filedel' class='btn_del_file'>supprimer</a>]" .
+                    "<a href='voirrendu.php?id=$idRendu&amp;modFichier={$row->idFichier}' class='btn_mod_file'><img src='img/icon_edit.png' alt='Modifier'></a>" .
+                    "<a href='voirrendu.php?id=$idRendu&amp;idFichier={$row->idFichier}&amp;do=filedel' class='btn_del_file'><img src='img/icon_trash.png' alt='Supprimer'></a>" .
                     "</td></tr>\n";
         }
     }

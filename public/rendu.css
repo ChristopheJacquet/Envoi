@@ -19,8 +19,9 @@
  */
 
 
-html {
+html, input, textarea {
     font-family: "trebuchet ms", sans-serif;
+    font-size: medium;
 }
 
 table.nb {
@@ -166,6 +167,18 @@ table.pad {
     padding-right: 20px;
 }
 
+.filelist tr td:first-child input {
+    width: 100%;
+}
+
+.filelist tr td:first-child {
+    min-width: 250px;
+}
+
+.filelist tr {
+    border-bottom: none;
+}
+
 .state_on {
     color: #2B2;
     font-weight: bold;
@@ -174,4 +187,15 @@ table.pad {
 .state_off {
     color: #B22;
     font-weight: bold;
+}
+
+.info {
+    background-color: #DDD;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.btn_mod_file, .btn_del_file {
+    text-decoration: none;
+    padding: 0 10px;
 }
