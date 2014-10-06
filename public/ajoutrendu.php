@@ -47,7 +47,7 @@ if(isset($_POST["titre"])) {
         }
 
     } else {
-        echo "<p>Vous voudez probablement ajouter un fichier à <a href=\"voirrendu.php?idRendu=$id\">cette livraison...</p>\n";
+        echo "<p>Vous voudez probablement ajouter un fichier à <a href=\"voirrendu.php?id=$idRendu\">cette livraison...</p>\n";
     }
 
     echo "<p><a href=\"index.php\">Retour à l'accueil</a>.</p>\n";
