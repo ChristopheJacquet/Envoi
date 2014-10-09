@@ -23,6 +23,8 @@ require_once('phpmailer/class.phpmailer.php');
 
 head("Livraison de compte-rendu");
 
+$email_check = array(1 => "ok", 2=> "unknown", 3=> "unknown");
+
 //    print_r($_POST);
 
 if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
@@ -136,6 +138,28 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                         if($conformes) echo "<div class=\"error\">\n";
                         echo "<p>Le fichier « {$r->nom} » manque.</p>\n";
                         $conformes = FALSE;
+                    }
+                }
+            }
+            
+            // Vérification des adresses e-mail
+            for($i = 1; $i<=3; $i++) {
+                if(isset($_POST["email" . $i]) && trim($_POST["email" . $i]) != "") {
+                    $email = trim($_POST["email" . $i]);
+                    $teststr = "E-mail " . htmlspecialchars($email);
+                    $infos = array();
+                    if(Local::is_valid_email($_SESSION["login"], $_SESSION["passwd"], $email, $infos)) {
+                        echo "<!-- $teststr OK (";
+                        foreach($infos as $k => $v) {
+                            echo htmlspecialchars($k) . ": " . htmlspecialchars($v) . ", ";
+                        }
+                        echo ") -->\n";
+                        $email_check[$i] = "ok";
+                    } else {
+                        if($conformes) echo "<div class=\"error\">\n";
+                        echo "<p>$teststr invalide !</p>";
+                        $conformes = FALSE;
+                        $email_check[$i] = "nok";
                     }
                 }
             }
@@ -348,15 +372,16 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
           $femail3 = isset($_POST["email3"]) ? 'value="' . htmlspecialchars($_POST["email3"]) . '" ' : "";
           $fcommentaire = isset($_POST["commentaire"]) ? htmlspecialchars($_POST["commentaire"]) : "";
 
+          $placeholder = Local::$email_placeholder;
 
           echo <<<EOF
 <h1>Rendre&nbsp;: $titre</h1>
 
 <form action="rendu.php" method="post" enctype="multipart/form-data">
 <input type="hidden" name="code" value="$code" />
-<p>Étudiant n°1. Nom&nbsp;: <input name="nom1" $fnom1 /> Prénom&nbsp;: <input name="prenom1" $fprenom1 /> Courriel&nbsp;: <input type="email" name="email1" $femail1 /></p>
-<p>Étudiant n°2. Nom&nbsp;: <input name="nom2" $fnom2 /> Prénom&nbsp;: <input name="prenom2" $fprenom2 /> Courriel&nbsp;: <input type="email" name="email2" placeholder="Nom.Prenom@supelec.fr" $femail2 /></p>
-<p>Étudiant n°3. Nom&nbsp;: <input name="nom3" $fnom3 /> Prénom&nbsp;: <input name="prenom3" $fprenom3 /> Courriel&nbsp;: <input type="email" name="email3" placeholder="Nom.Prenom@supelec.fr" $femail3 /></p>
+<p class="coords_etudiant">Étudiant n°1. Courriel&nbsp;: <input type="email" name="email1" class="coords_email_{$email_check[1]}" size="40" $femail1 /> Nom&nbsp;: <input name="nom1" size="25" $fnom1 /> Prénom&nbsp;: <input name="prenom1" size="25" $fprenom1 /></p>
+<p class="coords_etudiant">Étudiant n°2. Courriel&nbsp;: <input type="email" name="email2" class="coords_email_{$email_check[2]}" size="40" autofocus placeholder="$placeholder" $femail2 /> Nom&nbsp;: <input name="nom2" size="25" $fnom2 /> Prénom&nbsp;: <input name="prenom2" size="25" $fprenom2 /></p>
+<p class="coords_etudiant">Étudiant n°3. Courriel&nbsp;: <input type="email" name="email3" class="coords_email_{$email_check[3]}" size="40" placeholder="$placeholder" $femail3 /> Nom&nbsp;: <input name="nom3" size="25" $fnom3 /> Prénom&nbsp;: <input name="prenom3" size="25" $fprenom3 /></p>
 <p>Commentaire éventuel à transmettre à l'enseignant&nbsp;:</p>
 <textarea name="commentaire" cols="60" rows="6">$fcommentaire</textarea>
 <div>

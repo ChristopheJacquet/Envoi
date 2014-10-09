@@ -1,25 +1,37 @@
 $(function() {
     $(".closedsection").hide();
-});
-
-function connectDialog(selector, url) {
-    //.html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
-    var dialog = $('<div></div>')
-            .load(url)
-        
-        .dialog({
-            autoOpen: false,
-            modal: true,
-            height: 625,
-            width: 500,
-            title: "Some title",
-            beforeClose: function() {
-                location.reload();
+    
+    $(".coords_etudiant input[type=email]").focusout(function() {
+        var email = $(this).val();
+        if(email == "") return;
+        var emailfield = $(this);
+        var nom = $(this).next("input");
+        var prenom = nom.next("input");
+        $.ajax("ajax.php", {
+            data: {
+                method: "is_valid_email",
+                email: email
             },
+            dataType: "json",
+            success: function(data) {
+                //console.log(data);
+                if(data["valid"] == 1) {
+                    if("nom" in data && "prenom" in data) {
+                        if(nom.val() == "") nom.val(data["nom"]);
+                        if(prenom.val() == "") prenom.val(data["prenom"]);
+                    }
+                    emailfield.removeClass("coords_email_nok");
+                    emailfield.addClass("coords_email_ok");
+                } else {
+                    emailfield.removeClass("coords_email_ok");
+                    emailfield.addClass("coords_email_nok");
+                }
+            }
         });
-
-    selector.click(function() {
-        dialog.dialog('open');
-        return false;
     });
-}
+    
+    $(".coords_etudiant input[type=email]").on("input", function() {
+       $(this).removeClass("coords_email_ok"); 
+       $(this).removeClass("coords_email_nok");
+    });
+});

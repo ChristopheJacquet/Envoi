@@ -41,6 +41,7 @@ if(isset($_POST["login"]) && isset($_POST["password"])) {
         echo " -->\n";
 
         $_SESSION["login"] = $login;
+        $_SESSION["passwd"] = $passwd;
         $_SESSION["displayName"] = $displayName;
         $_SESSION["nom"] = $infos["nom"];
         $_SESSION["prenom"] = $infos["prenom"];

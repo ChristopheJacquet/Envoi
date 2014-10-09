@@ -199,3 +199,11 @@ table.pad {
     text-decoration: none;
     padding: 0 10px;
 }
+
+.coords_email_ok {
+    background-color: #DFD;
+}
+
+.coords_email_nok {
+    background-color: #FDD;
+}

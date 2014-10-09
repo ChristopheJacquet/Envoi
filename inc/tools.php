@@ -41,6 +41,9 @@ function strleft($s1, $s2) {
 }
 
 function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
+    // set time zone
+    date_default_timezone_set(Local::$timezone);
+    
     // work in progress?
     if(Local::$wip && ! in_array($_SERVER["REMOTE_ADDR"], Local::$wip_authorized)) {
         echo "<div class=\"error\">Travaux en cours. Merci de patienter quelques minutes, ou de contacter le mainteneur...</div>";
@@ -75,9 +78,7 @@ function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>$metatitre</title>
         <link rel="stylesheet" type="text/css" href="rendu.css" />
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="envoi.js"></script>
         <meta name="format-detection" content="telephone=no" />
     </head>
