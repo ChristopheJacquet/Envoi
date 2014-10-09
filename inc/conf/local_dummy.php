@@ -14,6 +14,9 @@ class Local {
     static $wip_authorized = array();   # list of IPs that can still access the server while there is work in progress
 
     static $locale = "fr_FR";
+    static $email_placeholder = "Prenom.Nom@example.com";    
+    static $timezone = "Europe/Paris";
+
 
     static function is_valid_user($login, $passwd, &$infos) {
         if($login == "foo" && $passwd == "foo") {
@@ -32,6 +35,11 @@ class Local {
 
         return false;
     }
+    
+    static function is_valid_email($login, $passwd, $email, &$infos) {
+        return TRUE;
+    }
+
 }
 
 ?>

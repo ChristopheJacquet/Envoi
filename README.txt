@@ -84,6 +84,16 @@ Voici les grandes lignes d'une authentification LDAP :
     }
 
 
+La fonction is_valid_email() indique si un e-mail est valide. Par exemple, elle
+peut vérifier qu'il est bien présent dans un annuaire LDAP. La forme la plus
+naïve de cette fonction est :
+
+    static function is_valid_email($login, $passwd, $email, &$infos) {
+        return TRUE;
+    }
+
+
+
 Utilisation
 -----------
 
@@ -127,7 +137,7 @@ Maintenance
 Passer aux fichiers sur disque (r10 -> r11 et suivantes) :
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1) Mettre en le système WIP
+1) Mettre en marche le système WIP
 
 2) Faire un backup
 
@@ -150,6 +160,8 @@ et un chmod -R : mettre g+w
 8) Optimiser la base :
 
 mysqlcheck -o livraison
+
+9) Retirer le WIP
 
 
 Licences
