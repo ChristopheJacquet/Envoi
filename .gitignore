@@ -1,0 +1,10 @@
+
+# /
+/Err
+/data
+
+# /inc/conf/
+/inc/conf/local.php
+
+# /public/
+/public/.htaccess
