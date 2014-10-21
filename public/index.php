@@ -83,7 +83,7 @@ if(isset($_SESSION["login"])) {
 
 <p>Veuillez indiquer vos identifiants habituels de Supélec</p>
 
-<form action="index.php<? if(isset($_GET["code"])) echo "?code=" . $_GET["code"]; ?>" method="post" class="gridform">
+<form action="index.php<?php if(isset($_GET["code"])) echo "?code=" . $_GET["code"]; ?>" method="post" class="gridform">
     <div><label>Nom d'utilisateur&nbsp;:</label> <input name="login" placeholder="nom_pre" type="text" autofocus></div>
     <div><label>Mot de passe&nbsp;:</label> <input name="password" type="password"></div>
     <div><input type="submit" value="Connexion"></div>
