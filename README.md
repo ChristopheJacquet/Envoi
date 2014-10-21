@@ -121,7 +121,7 @@ de livraison donée par un prof
  - un e-mail est alors envoyé
 
 
-# SQLite
+## SQLite
 
 (non fonctionnel pour le moment)
 
@@ -131,16 +131,16 @@ Sinon cela provoque "General error: 14 unable to open database file"
 
 
 
-# Tests
+## Tests
 
 ```
 php -d include_path=.:../inc tests
 ```
 
 
-# Maintenance
+## Maintenance
 
-## Passer au stockage des fichiers sur disque (SVN r10 -> r11)
+### Passer au stockage des fichiers sur disque (SVN r10 -> r11)
 
 Utile uniquement si vous utilisiez Envoi avant début 2014.
 
