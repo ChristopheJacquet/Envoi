@@ -41,7 +41,7 @@ if($method == "is_valid_email") {
     }
     
     $infos = array();
-    $valid = Local::is_valid_email($_SESSION["login"], $_SESSION["passwd"], $_GET["email"], $infos);
+    $valid = Local::is_valid_email($_SESSION["login"], $_GET["email"], $infos);
     
     $infos["valid"] = $valid ? 1 : 0;
     

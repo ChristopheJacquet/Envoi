@@ -148,7 +148,7 @@ if(empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strto
                     $email = trim($_POST["email" . $i]);
                     $teststr = "E-mail " . htmlspecialchars($email);
                     $infos = array();
-                    if(Local::is_valid_email($_SESSION["login"], $_SESSION["passwd"], $email, $infos)) {
+                    if(Local::is_valid_email($_SESSION["login"], $email, $infos)) {
                         echo "<!-- $teststr OK (";
                         foreach($infos as $k => $v) {
                             echo htmlspecialchars($k) . ": " . htmlspecialchars($v) . ", ";
