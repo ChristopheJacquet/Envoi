@@ -207,3 +207,8 @@ table.pad {
 .coords_email_nok {
     background-color: #FDD;
 }
+
+a.selectYear {
+    font-size: 50%;
+    font-weight: normal;
+}

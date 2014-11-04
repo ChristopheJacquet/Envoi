@@ -59,7 +59,10 @@ function head($titre, $role = false, $mustBeLoggedIn = true, $display = true) {
                 " (" . (($_SESSION["role"] == "PROF") ? "enseignant" : "étudiant") . ")" .
                 ". <a href=\"logout.php\">Déconnexion</a>.</div>";
 
-        if($_SESSION["role"] == "PROF") $loggedin .= "<div id=\"menuBox\"><a href=\"index.php\">Accueil</a> | <a href=\"listerendus.php\">Liste livraisons</a> | <a href=\"ajoutrendu.php\">Ajout livraison</a></div>";
+        if($_SESSION["role"] == "PROF") $loggedin .= "<div id=\"menuBox\"><a href=\"index.php\">Accueil</a>" .
+                " | <a href=\"listerendus.php\">Liste livraisons</a>" . 
+                " | <a href=\"ajoutrendu.php\">Ajout livraison</a>" .
+                " | <a href=\"multisuppr.php\">Suppression livraisons</a></div>";
         //| <a href='listeseances.php'>Séances</a></div>";
 
         
@@ -134,5 +137,86 @@ function createFilePath($path) {
 #    return $script_directory . "/scripts/";
 #}
 
+
+function listeLivraisons($template) {
+    $res = DB::request(
+            # subtract 7 months from the date so that a school year fits entirely
+            # into a calendary year
+            "SELECT idRendu, code, titre, YEAR(DATE_ADD(date, INTERVAL -7 MONTH)) y FROM rendu WHERE idEnseignant=? ORDER BY date DESC", 
+            array($_SESSION["login"]));
+
+    $curYear = 0;
+
+    while($row = $res->fetch()) {
+        if($curYear != $row->y) {
+            if($curYear > 0) {
+                echo "</ul>\n";
+            }
+            $curYear = $row->y;
+            echo "<h2 class='annee'>" . $curYear . "-" . ($curYear+1) . "</h2>\n<ul>\n";
+        }
+        $titre = str_replace(array("{titre}", "{id}"), array($row->code . " &mdash; " . htmlspecialchars($row->titre), $row->idRendu), $template);
+
+        echo "<li><a href=\"voirrendu.php?id=" . $row->idRendu . "\">" . $titre . "</a></li>\n";
+    }
+    echo "</ul>";
+}
+
+function supprimeLivraison($idRendu, $code = FALSE) {
+    echo "<p>Suppression de la livraison #" . $idRendu . "</p>";
+
+    if($code) {
+        $res = DB::request(
+                "DELETE FROM rendu WHERE idRendu=? AND idEnseignant=? AND code=?", 
+                array($idRendu, $_SESSION["login"], $_POST['code']));
+    } else {
+        $res = DB::request(
+                "DELETE FROM rendu WHERE idRendu=? AND idEnseignant=?",
+                array($idRendu, $_SESSION["login"]));
+    }
+
+    if($res->rowCount() < 1) {
+        die(<<<END
+<p>$idRendu : livraison inexistante, ou n'appartenant pas à l'utilisateur {$_SESSION["login"]}, ou mauvais code.</p>
+<p><a href="voirrendu.php?id=$idRendu">Retour au rendu</a></p>
+END
+);
+    } else {
+        echo "<p>Supprimé la spécification de livraison.</p>";
+    }
+
+
+    # fichierDonne
+    $res = DB::request(
+            "DELETE FROM fichierDonne WHERE idFichier IN (SELECT idFichier FROM fichier WHERE idRendu=?)",
+            array($idRendu));
+
+    echo "<p>Supprimé " . ($res->rowCount()) . " fichiers fournis</p>";
+
+
+    # participant
+    $res = DB::request(
+            "DELETE FROM participant WHERE idRenduDonne IN (SELECT idRenduDonne FROM renduDonne WHERE idRendu=?)",
+            array($idRendu));
+
+    echo "<p>Supprimé " . ($res->rowCount()) . " participants</p>";
+
+
+    # renduDonne
+    $res = DB::request(
+            "DELETE FROM renduDonne WHERE idRendu=?",
+            array($idRendu));
+
+    echo "<p>Supprimé " . ($res->rowCount()) . " livraisons</p>";
+
+
+    # fichier
+    $res = DB::request(
+            "DELETE FROM fichier WHERE idRendu=?",
+            array($idRendu));
+
+    echo "<p>Supprimé " . ($res->rowCount()) . " spécifications de fichiers";
+
+}
 
 ?>

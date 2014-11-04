@@ -34,4 +34,14 @@ $(function() {
        $(this).removeClass("coords_email_ok"); 
        $(this).removeClass("coords_email_nok");
     });
+    
+    $("form#multisuppr > h2.annee").each(function() {
+       $(this).append(' <a href="#" onclick="selectYear(this)" class="selectYear">[Tout inverser]</a>'); 
+    });
 });
+
+
+function selectYear(elt) {
+    $(elt).parent().next("ul").find("input[type=checkbox]").prop("checked", function(i, val) { return !val; });
+    return false;
+}
