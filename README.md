@@ -96,7 +96,7 @@ La fonction `is_valid_email` indique si un e-mail est valide. Par exemple, elle
 peut vérifier qu'il est bien présent dans un annuaire LDAP. La forme la plus
 naïve de cette fonction est :
 
-    static function is_valid_email($login, $passwd, $email, &$infos) {
+    static function is_valid_email($login, $email, &$infos) {
         return TRUE;
     }
 

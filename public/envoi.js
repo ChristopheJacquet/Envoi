@@ -36,7 +36,7 @@ $(function() {
     });
     
     $("form#multisuppr > h2.annee").each(function() {
-       $(this).append(' <a href="#" onclick="selectYear(this)" class="selectYear">[Tout inverser]</a>'); 
+       $(this).append(' <a href="#" onclick="return selectYear(this);" class="selectYear">[Tout inverser]</a>'); 
     });
 });
 
