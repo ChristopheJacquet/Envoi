@@ -206,7 +206,7 @@ END
         if($r) {
             $supprCount ++;
         } else {
-            echo "<p>ATTENTION : échec de la suppression du fichier $f. Veuillez contacter le mainteneur.</p>";
+            echo "<p>ATTENTION : échec de la suppression du fichier $fn. Veuillez contacter le mainteneur.</p>";
         }
         
         # fichierDonne
