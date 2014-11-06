@@ -186,13 +186,45 @@ END
     }
 
 
-    # fichierDonne
+    # fichiers sur le disque
     $res = DB::request(
-            "DELETE FROM fichierDonne WHERE idFichier IN (SELECT idFichier FROM fichier WHERE idRendu=?)",
+            "SELECT idFichierDonne FROM fichierDonne NATURAL JOIN renduDonne WHERE renduDonne.idRendu = ?",
             array($idRendu));
+    
+    $supprCount = 0;
+    $supprCountDB = 0;
+    
+    while($row = $res->fetch()) {
+        fileIdToPath($row->idFichierDonne, $p, $n);
+    
+        $fn = $p . $n;
+        
+        $r = unlink($fn);
+        
+        
+        #echo "<p>DEBUG: deleted $fn</p>";
+        if($r) {
+            $supprCount ++;
+        } else {
+            echo "<p>ATTENTION : échec de la suppression du fichier $f. Veuillez contacter le mainteneur.</p>";
+        }
+        
+        # fichierDonne
+        $r = DB::request(
+                "DELETE FROM fichierDonne WHERE idFichierDonne = ?",
+                array($row->idFichierDonne));
 
-    echo "<p>Supprimé " . ($res->rowCount()) . " fichiers fournis</p>";
-
+        if($r->rowCount() === 1) {
+            $supprCountDB ++;
+        } else {
+            echo "<p>ATTENTION : échec de la suppression du fichier {$row->idFichierDonne} dans la base. Veuillez contacter le mainteneur.</p>";
+        }
+        
+    }
+    
+    echo "<p>Supprimé $supprCount sur disque et $supprCountDB dans la base</p>";
+    
+    
 
     # participant
     $res = DB::request(

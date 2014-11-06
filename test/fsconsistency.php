@@ -45,6 +45,10 @@ buildfilelist("");
 
 echo "Checking whether the filesystem is consistent with the database...\n";
 
+$delete = isset($argv[1]) && $argv[1] === "delete_orphans";
+
+if($delete) echo "Will be deleting orphans.\n";
+
 $res = DB::request(
         "SELECT idFichierDonne, idFichier, idRenduDonne, idRendu FROM fichierDonne NATURAL JOIN renduDonne");
 
@@ -72,6 +76,11 @@ while($row = $res->fetch()) {
 # At this point, the only remaining files are orphans
 foreach($filelist as $k => $v) {
     echo "Orphaned file: " . $k . "\n";
+    if($delete) {
+        if( unlink($k) ) {
+            echo "Deleted $k\n";
+        }
+    }
     $countOrphaned++;
 }
 
